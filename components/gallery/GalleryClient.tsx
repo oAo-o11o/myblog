@@ -1,3 +1,4 @@
+import { asset } from '@/lib/asset'
 'use client'
 
 import { useState, useCallback, useEffect } from 'react'
@@ -36,8 +37,8 @@ export default function GalleryClient() {
     const fetchData = async () => {
       try {
         const [photoRes, videoRes] = await Promise.all([
-          fetch('/api/upload/photos'),
-          fetch('/api/upload/videos'),
+          fetch(asset('/api/upload/photos')),
+          fetch(asset('/api/upload/videos')),
         ])
 
         const photoData = photoRes.ok ? await photoRes.json() : { photos: [] }

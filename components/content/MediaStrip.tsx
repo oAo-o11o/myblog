@@ -1,3 +1,4 @@
+import { asset } from '@/lib/asset'
 import fs from 'fs'
 import path from 'path'
 import Image from 'next/image'
@@ -47,8 +48,8 @@ export default function MediaStrip({ media }: { media?: string[] }) {
           return (
             <video
               key={file}
-              src={`/api/media/videos/${file}`}
-              poster={meta?.poster ? `/api/media/videos/${meta.poster}` : undefined}
+              src={asset(`/api/media/videos/${file}`)}
+              poster={meta?.poster ? asset(`/api/media/videos/${meta.poster}`) : undefined}
               controls
               preload="none"
               playsInline
@@ -67,7 +68,7 @@ export default function MediaStrip({ media }: { media?: string[] }) {
             }`}
           >
             <Image
-              src={`/api/media/photos/${file}`}
+              src={asset(`/api/media/photos/${file}`)}
               alt={meta?.alt || file}
               width={meta?.width || 1200}
               height={meta?.height || 900}

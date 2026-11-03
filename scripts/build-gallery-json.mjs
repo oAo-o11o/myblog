@@ -9,6 +9,8 @@ const root = process.cwd()
 const photosDir = path.join(root, 'public', 'photos')
 const videosDir = path.join(root, 'public', 'videos')
 
+const BASE = process.env.BASE_PATH || ''
+
 const IMAGE_EXT = /\.(jpg|jpeg|png|gif|webp)$/i
 const VIDEO_EXT = /\.(mp4|webm|mov)$/i
 
@@ -29,7 +31,7 @@ const photos = (fs.existsSync(photosDir) ? fs.readdirSync(photosDir) : [])
   .filter((f) => IMAGE_EXT.test(f))
   .map((file) => ({
     id: file,
-    src: `/photos/${file}`,
+    src: `${BASE}/photos/${file}`,
     alt: photoMeta[file]?.alt || file,
     tags: photoMeta[file]?.tags || [],
     width: photoMeta[file]?.width || 600,
@@ -40,8 +42,8 @@ const videos = (fs.existsSync(videosDir) ? fs.readdirSync(videosDir) : [])
   .filter((f) => VIDEO_EXT.test(f))
   .map((file) => ({
     id: file,
-    src: `/videos/${file}`,
-    poster: videoMeta[file]?.poster ? `/videos/${videoMeta[file].poster}` : null,
+    src: `${BASE}/videos/${file}`,
+    poster: videoMeta[file]?.poster ? `${BASE}/videos/${videoMeta[file].poster}` : null,
     title: videoMeta[file]?.title || file,
     desc: videoMeta[file]?.desc || '',
     tags: videoMeta[file]?.tags || [],

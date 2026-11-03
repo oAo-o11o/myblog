@@ -12,6 +12,9 @@ const nextConfig: NextConfig = {
   ...(isStatic ? { output: 'export' as const, trailingSlash: true } : {}),
   ...(isStatic && basePath ? { basePath } : {}),
 
+  // 让 lib/asset.ts 能拿到 basePath（构建时内联）
+  env: { NEXT_PUBLIC_BASE_PATH: basePath },
+
   images: {
     // 静态导出没有图片优化服务端，必须关掉
     unoptimized: isStatic,
