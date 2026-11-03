@@ -1,4 +1,4 @@
-# publish.ps1 —— 一条命令：检查 → 提交 → 推送 → 等部署
+﻿# publish.ps1 —— 一条命令：检查 → 提交 → 推送 → 等部署
 # 用法：
 #   npm run publish -- "改了什么"
 #   powershell -File deploy/publish.ps1 -Message "改了什么"

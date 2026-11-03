@@ -56,11 +56,19 @@ async function main() {
     })
   }
 
-  await check('专题页 /topics/计算机', async () => {
-    const res = await get('/topics/' + encodeURIComponent('计算机'))
-    assert(res.status === 200, `HTTP ${res.status}`)
-    return '200'
-  })
+  // 题目会随内容变，动态取第一个，别写死
+  const metaProbe = await jget('/api/posts')
+  const firstTopic = metaProbe.json?.meta?.flatMap((m) => m.topics ?? [])[0]
+
+  if (firstTopic) {
+    await check(`专题页 /topics/${firstTopic}`, async () => {
+      const res = await get('/topics/' + encodeURIComponent(firstTopic))
+      assert(res.status === 200, `HTTP ${res.status}`)
+      return '200'
+    })
+  } else {
+    await check('专题页（当前没有题目，跳过）', async () => 'skipped')
+  }
 
   await check('不存在的专题 → 404', async () => {
     const res = await get('/topics/' + encodeURIComponent('不存在的题目xyz'))
