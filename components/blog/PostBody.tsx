@@ -1,33 +1,14 @@
-'use client'
+import { MDXRemote } from 'next-mdx-remote/rsc'
 
-import { MDXRemote } from 'next-mdx-remote'
-import { serialize } from 'next-mdx-remote/serialize'
-import { useEffect, useState } from 'react'
-
-interface PostBodyProps {
-  content: string
-}
-
-export default function PostBody({ content }: PostBodyProps) {
-  const [mdxSource, setMdxSource] = useState<Awaited<ReturnType<typeof serialize>> | null>(null)
-
-  useEffect(() => {
-    serialize(content).then(setMdxSource)
-  }, [content])
-
-  if (!mdxSource) {
-    return (
-      <div className="prose animate-pulse space-y-4">
-        {[...Array(6)].map((_, i) => (
-          <div key={i} className="h-4 bg-[rgba(0,255,136,0.08)] rounded" style={{ width: `${60 + Math.random() * 40}%` }} />
-        ))}
-      </div>
-    )
-  }
-
+/**
+ * 正文渲染。用 next-mdx-remote 的 RSC 版本在服务端编译：
+ * - 静态导出时正文直接写进 HTML（不再等 JS 加载才出字）
+ * - 不会出现「服务端骨架屏 / 客户端内容」的 hydration 不一致
+ */
+export default function PostBody({ content }: { content: string }) {
   return (
     <div className="prose">
-      <MDXRemote {...mdxSource} />
+      <MDXRemote source={content} />
     </div>
   )
 }
