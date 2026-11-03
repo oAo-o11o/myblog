@@ -1,5 +1,6 @@
-import { asset } from '@/lib/asset'
 'use client'
+
+import { asset } from '@/lib/asset'
 
 import { useState, useCallback, useEffect } from 'react'
 import Image from 'next/image'
