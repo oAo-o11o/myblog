@@ -5,7 +5,10 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "check": "tsc --noEmit",
+    "verify": "node scripts/verify.mjs",
+    "publish": "powershell -ExecutionPolicy Bypass -File deploy/publish.ps1"
   },
   "dependencies": {
     "@types/bcryptjs": "^2.4.6",
