@@ -59,8 +59,13 @@ $sha = (git rev-parse HEAD).Trim()
 $runId = ""
 for ($i = 0; $i -lt 12; $i++) {
   Start-Sleep -Seconds 5
-  $runId = (gh run list --repo oAo-o11o/myblog --limit 10 --json databaseId,headSha -q "[.[] | select(.headSha == `"$sha`")][0].databaseId" 2>$null)
-  if ($runId) { break }
+  try {
+    $runs = gh run list --repo oAo-o11o/myblog --limit 10 --json databaseId,headSha | ConvertFrom-Json
+    $match = $runs | Where-Object { $_.headSha -eq $sha } | Select-Object -First 1
+    if ($match) { $runId = $match.databaseId; break }
+  } catch {
+    # 网络抖动就继续重试
+  }
 }
 if (-not $runId) {
   Write-Host "    还没看到这次提交的运行，去网页看：" -ForegroundColor Yellow
