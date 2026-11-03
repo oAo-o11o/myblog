@@ -14,10 +14,8 @@ export default function NewPostPage() {
     title: '',
     date: new Date().toISOString().slice(0, 10),
     excerpt: '',
-    tags: '',
-    topics: '',
-    cover: '',
-    content: '',
+      topics: '',
+      content: '',
   })
   const [kind, setKind] = useState<'thought' | 'article'>('thought')
   const [media, setMedia] = useState<string[]>([])
@@ -95,7 +93,6 @@ export default function NewPostPage() {
           ...form,
           kind,
           media,
-          tags: form.tags.split(',').map(t => t.trim()).filter(Boolean),
           topics: form.topics.split(',').map(t => t.trim()).filter(Boolean),
         }),
       })
@@ -253,14 +250,10 @@ export default function NewPostPage() {
                   <input value={form.excerpt} onChange={set('excerpt')} placeholder="一句话简介" className={inputCls} />
                 </Field>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <Field label="标签（逗号分隔）">
-                    <input value={form.tags} onChange={set('tags')} placeholder="技术, 生活, Next.js" className={inputCls} />
-                  </Field>
-                  <Field label="封面图 URL">
-                    <input value={form.cover} onChange={set('cover')} placeholder="https://..." className={inputCls} />
-                  </Field>
-                </div>
+                <p className="text-[.75rem] leading-6 text-ink-dim">
+                  封面和配图在下面「附带的图片 / 视频」里选，选中的第一张会显示在文章顶部。
+                  正文中间要插图，写一行 <code className="font-mono">![说明](/photos/文件名.jpg)</code> 就行。
+                </p>
               </>
             )}
 

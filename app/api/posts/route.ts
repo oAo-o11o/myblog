@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json()
-  const { title, date, excerpt, tags, cover, content } = body
+  const { title, date, excerpt, content } = body
   const kind = body.kind === 'thought' ? 'thought' : 'article'
   const topics: string[] = Array.isArray(body.topics)
     ? body.topics.map(String).filter(Boolean)
@@ -86,8 +86,7 @@ export async function POST(req: NextRequest) {
     topics.length > 0 ? `topics: [${topics.map((t) => `"${t}"`).join(', ')}]` : null,
     media.length > 0 ? `media: [${media.map((m) => `"${m}"`).join(', ')}]` : null,
     `excerpt: "${excerpt ?? ''}"`,
-    `tags: [${(tags ?? []).map((t: string) => `"${t}"`).join(', ')}]`,
-    cover ? `cover: "${cover}"` : null,
+    // 不再写 tags / cover：站点已改用 topics（分类）与 media（图片视频）
     '---',
     '',
   ].filter((l) => l !== null).join('\n')

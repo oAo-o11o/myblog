@@ -14,6 +14,11 @@ interface Form {
   content: string
 }
 
+interface MediaPreview {
+  url: string
+  isVideo: boolean
+}
+
 export default function EditPostPage() {
   const router = useRouter()
   const { slug } = useParams<{ slug: string }>()
@@ -28,11 +33,13 @@ export default function EditPostPage() {
     media: '',
     content: '',
   })
+  const [available, setAvailable] = useState<Record<string, MediaPreview>>({})
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const [ok, setOk] = useState('')
 
+  // 读取内容
   useEffect(() => {
     fetch(`/api/posts/${slug}/raw`)
       .then((r) => r.json())
@@ -58,6 +65,23 @@ export default function EditPostPage() {
       })
   }, [slug, router])
 
+  // 读取可用的图片/视频，用来做封面预览
+  useEffect(() => {
+    Promise.all([
+      fetch('/api/upload/photos').then((r) => r.json()).catch(() => ({ photos: [] })),
+      fetch('/api/upload/videos').then((r) => r.json()).catch(() => ({ videos: [] })),
+    ]).then(([p, v]) => {
+      const map: Record<string, MediaPreview> = {}
+      for (const item of p.photos ?? []) {
+        map[item.id] = { url: `/api/media/photos/${item.id}`, isVideo: false }
+      }
+      for (const item of v.videos ?? []) {
+        map[item.id] = { url: `/api/media/videos/${item.id}`, isVideo: true }
+      }
+      setAvailable(map)
+    })
+  }, [])
+
   const set =
     (k: keyof Form) =>
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
@@ -68,6 +92,13 @@ export default function EditPostPage() {
       .split(/[,，]/)
       .map((x) => x.trim())
       .filter(Boolean)
+
+  const mediaList = splitList(form.media)
+
+  const insertImage = (file: string) => {
+    const md = `\n\n![说明](/photos/${file})\n\n`
+    setForm((f) => ({ ...f, content: f.content + md }))
+  }
 
   const submit = async (e: FormEvent) => {
     e.preventDefault()
@@ -84,7 +115,7 @@ export default function EditPostPage() {
           date: form.date,
           excerpt: form.excerpt,
           topics: splitList(form.topics),
-          media: splitList(form.media),
+          media: mediaList,
           content: form.content,
         }),
       })
@@ -153,19 +184,73 @@ export default function EditPostPage() {
             value={form.topics}
             onChange={set('topics')}
             className="field"
-            placeholder="哲学, 计算机"
+            placeholder="随笔, 心理"
           />
         </label>
 
-        <label className="flex flex-col gap-2">
-          <span className="label-rule">附带媒体（文件名，逗号分隔）</span>
-          <input
-            value={form.media}
-            onChange={set('media')}
-            className="field font-mono text-xs"
-            placeholder="1793666201929.webp"
-          />
-        </label>
+        <div className="flex flex-col gap-3">
+          <label className="flex flex-col gap-2">
+            <span className="label-rule">封面 / 附带媒体（第一张显示在文章顶部）</span>
+            <input
+              value={form.media}
+              onChange={set('media')}
+              className="field font-mono text-xs"
+              placeholder="1793669101294.png"
+            />
+          </label>
+
+          {mediaList.length > 0 && (
+            <div className="flex flex-wrap gap-3">
+              {mediaList.map((file, i) => {
+                const found = available[file]
+                return (
+                  <div key={file + i} className="w-28">
+                    <div className="w-28 h-28 rounded-lg overflow-hidden bg-panel-2 border border-line flex items-center justify-center">
+                      {found ? (
+                        found.isVideo ? (
+                          <video
+                            src={found.url}
+                            muted
+                            preload="metadata"
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <img
+                            src={found.url}
+                            alt={file}
+                            className="w-full h-full object-cover"
+                          />
+                        )
+                      ) : (
+                        <span className="text-[.625rem] text-center px-2 text-red-400/80">
+                          找不到文件
+                        </span>
+                      )}
+                    </div>
+                    <p className="mt-1 text-[.625rem] font-mono text-ink-dim truncate" title={file}>
+                      {i === 0 ? '封面 · ' : ''}
+                      {file}
+                    </p>
+                    {found && !found.isVideo && (
+                      <button
+                        type="button"
+                        onClick={() => insertImage(file)}
+                        className="mt-1 text-[.625rem] text-ink-dim hover:text-ink-muted"
+                      >
+                        插入到正文
+                      </button>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          )}
+
+          <p className="note">
+            图片先传到「媒体 → 图片」。正文中间插图也可以直接写
+            <code className="font-mono mx-1">![说明](/photos/文件名.jpg)</code>
+          </p>
+        </div>
 
         <label className="flex flex-col gap-2">
           <span className="label-rule">正文</span>
@@ -188,10 +273,7 @@ export default function EditPostPage() {
           <Link href="/admin/dashboard" className="text-[.75rem] text-ink-dim hover:text-ink-muted">
             ← 返回概览
           </Link>
-          <Link
-            href={`/admin/topics`}
-            className="text-[.75rem] text-ink-dim hover:text-ink-muted"
-          >
+          <Link href="/admin/topics" className="text-[.75rem] text-ink-dim hover:text-ink-muted">
             管理题目 ↗
           </Link>
         </div>
