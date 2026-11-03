@@ -1,0 +1,15 @@
+services:
+  app:
+    build: .
+    image: cyberlog:latest
+    container_name: cyberlog
+    env_file: .env
+    # 只绑本机：外部流量走 nginx 或 cloudflared，不直接暴露 3000
+    ports:
+      - "127.0.0.1:3000:3000"
+    volumes:
+      # 这三个目录是「数据」，必须落在宿主机上
+      - ./content:/app/content
+      - ./public/photos:/app/public/photos
+      - ./public/videos:/app/public/videos
+    restart: unless-stopped

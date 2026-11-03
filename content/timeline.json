@@ -1,0 +1,29 @@
+[
+  {
+    "year": "2026",
+    "month": "April",
+    "title": "Launched Digital Corner",
+    "desc": "Turned the blog into a public site with posts, media uploads, and a more personal identity.",
+    "icon": "✦",
+    "color": "#00ff88",
+    "tags": ["site", "milestone"]
+  },
+  {
+    "year": "2026",
+    "month": "April",
+    "title": "Added photo and video workflow",
+    "desc": "Built image upload, video upload, transcoding, media management, and gallery integration.",
+    "icon": "▶",
+    "color": "#00d4ff",
+    "tags": ["media", "build"]
+  },
+  {
+    "year": "2026",
+    "month": "April",
+    "title": "Connected custom domain",
+    "desc": "Finished external access through Cloudflare Tunnel and made the site reachable from outside the local network.",
+    "icon": "◎",
+    "color": "#ff0090",
+    "tags": ["deploy", "network"]
+  }
+]

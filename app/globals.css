@@ -1,0 +1,949 @@
+@import "tailwindcss";
+
+/* =====================================================================
+   CyberLog — 皮肤层（Tailwind CSS 4）
+   语义变量 → @theme inline → 组件用 bg-canvas / text-ink / border-line
+   切 <html data-skin="..."> 即可全站换肤：olive | ink | plum | warm | neon（全深色）
+   ===================================================================== */
+
+@theme inline {
+  --color-canvas:      var(--skin-canvas);
+  --color-panel:       var(--skin-panel);
+  --color-panel-2:     var(--skin-panel-2);
+  --color-line:        var(--skin-line);
+  --color-line-strong: var(--skin-line-strong);
+  --color-ink:         var(--skin-ink);
+  --color-ink-muted:   var(--skin-ink-muted);
+  --color-ink-dim:     var(--skin-ink-dim);
+  --color-accent:      var(--skin-accent);
+  --color-accent-2:    var(--skin-accent-2);
+  --color-accent-3:    var(--skin-accent-3);
+  --color-on-accent:   var(--skin-on-accent);
+
+  --font-sans:    var(--skin-font-sans);
+  --font-mono:    var(--skin-font-mono);
+  --font-display: var(--skin-font-display);
+
+  --radius-card: 28px;
+  --radius-pill: 999px;
+}
+
+/* ---------------------------------------------------------------------
+   皮肤定义
+   --------------------------------------------------------------------- */
+
+/* A. warm —— 暖纸感 */
+:root,
+[data-skin="warm"] {
+  --skin-canvas:      #13100e;
+  --skin-panel:       rgba(255, 252, 248, 0.028);
+  --skin-panel-2:     rgba(200, 170, 140, 0.045);
+  --skin-line:        rgba(200, 170, 140, 0.14);
+  --skin-line-strong: rgba(244, 184, 160, 0.34);
+  --skin-ink:         #f5ede0;
+  --skin-ink-muted:   #c4b09a;
+  --skin-ink-dim:     #8a7a68;
+  --skin-accent:      #f4b8a0;
+  --skin-accent-2:    #d4a0c8;
+  --skin-accent-3:    #e8c07d;
+  --skin-on-accent:   #1a1410;
+  --skin-hue-weight:  55%;   /* about.json 技能色与主色的混合权重 */
+  --skin-font-sans:    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --skin-font-mono:    'JetBrains Mono', 'Cascadia Code', 'Consolas', monospace;
+  --skin-font-display: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', Georgia, serif;
+  --skin-glow:  0 0 40px rgba(244, 184, 160, 0.16);
+  --skin-atmos:
+    radial-gradient(circle at top,    rgba(244, 184, 160, 0.10), transparent 34%),
+    radial-gradient(circle at bottom, rgba(212, 160, 200, 0.07), transparent 30%),
+    linear-gradient(180deg, #13100e 0%, #1a1410 45%, #110e0c 100%);
+}
+
+/* D. olive —— 橄榄纸本（从「数字角落」原型提取，默认皮肤） */
+[data-skin="olive"] {
+  --skin-canvas:      #131513;
+  --skin-panel:       #191c18;
+  --skin-panel-2:     #20241e;
+  --skin-line:        #2b3028;
+  --skin-line-strong: #4b593d;
+  --skin-ink:         #dce0d5;
+  --skin-ink-muted:   #a9b39c;
+  --skin-ink-dim:     #6d7a63;
+  --skin-accent:      #c1ce9c;
+  --skin-accent-2:    #c8ac87;
+  --skin-accent-3:    #9caf7d;
+  --skin-on-accent:   #1c2515;
+  --skin-hue-weight:  28%;
+  --skin-font-sans:    'Inter', -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --skin-font-mono:    ui-monospace, 'SF Mono', 'Cascadia Code', Consolas, monospace;
+  --skin-font-display: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', Georgia, serif;
+  --skin-glow:  0 0 32px rgba(193, 206, 156, 0.12);
+  --skin-atmos:
+    radial-gradient(circle at 50% 78%, rgba(52, 60, 38, 0.16), transparent 62%),
+    linear-gradient(180deg, #131513 0%, #151814 55%, #111311 100%);
+}
+
+/* B. neon —— 赛博青绿（1.0 原版） */
+[data-skin="neon"] {
+  --skin-canvas:      #0a0e27;
+  --skin-panel:       rgba(20, 25, 50, 0.5);
+  --skin-panel-2:     rgba(0, 255, 136, 0.05);
+  --skin-line:        rgba(0, 255, 136, 0.12);
+  --skin-line-strong: rgba(0, 212, 255, 0.3);
+  --skin-ink:         #ffffff;
+  --skin-ink-muted:   #a0aec0;
+  --skin-ink-dim:     #718096;
+  --skin-accent:      #00ff88;
+  --skin-accent-2:    #00d4ff;
+  --skin-accent-3:    #ff006e;
+  --skin-on-accent:   #04120a;
+  --skin-hue-weight:  92%;   /* 霓虹皮肤保留原图数据色 */
+  --skin-font-sans:    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --skin-font-mono:    'Courier New', 'Consolas', monospace;
+  --skin-font-display: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  --skin-glow:  0 0 30px rgba(0, 255, 136, 0.35);
+  --skin-atmos:
+    radial-gradient(circle at 20% 50%, rgba(0, 255, 136, 0.10), transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(0, 212, 255, 0.08), transparent 50%),
+    radial-gradient(circle at 40% 20%, rgba(255, 0, 110, 0.06), transparent 50%),
+    linear-gradient(135deg, #0a0e27 0%, #1a0f3a 25%, #0f1a3a 50%, #1a0f2a 75%, #0a0e27 100%);
+}
+
+/* C. ink —— 石墨（冷灰），最中性的阅读底色 */
+[data-skin="ink"] {
+  --skin-canvas:      #101214;
+  --skin-panel:       #17191c;
+  --skin-panel-2:     #1e2124;
+  --skin-line:        #2a2e33;
+  --skin-line-strong: #414852;
+  --skin-ink:         #dfe4ea;
+  --skin-ink-muted:   #a3adb8;
+  --skin-ink-dim:     #6b757f;
+  --skin-accent:      #9ab3c9;
+  --skin-accent-2:    #c2ab8a;
+  --skin-accent-3:    #8fa3b8;
+  --skin-on-accent:   #0e1418;
+  --skin-hue-weight:  30%;
+  --skin-font-sans:    'Inter', -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --skin-font-mono:    ui-monospace, 'SF Mono', 'Cascadia Code', Consolas, monospace;
+  --skin-font-display: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', Georgia, serif;
+  --skin-glow:  0 0 32px rgba(154, 179, 201, 0.10);
+  --skin-atmos:
+    radial-gradient(circle at 50% 76%, rgba(40, 48, 56, 0.22), transparent 62%),
+    linear-gradient(180deg, #101214 0%, #121517 55%, #0e1012 100%);
+}
+
+/* D. plum —— 暗梅（偏酒红），比 olive 更私密一点 */
+[data-skin="plum"] {
+  --skin-canvas:      #141013;
+  --skin-panel:       #1a1418;
+  --skin-panel-2:     #221a1f;
+  --skin-line:        #2e2229;
+  --skin-line-strong: #4a3540;
+  --skin-ink:         #e6dbe0;
+  --skin-ink-muted:   #b3a0a9;
+  --skin-ink-dim:     #7a6870;
+  --skin-accent:      #c9a0ab;
+  --skin-accent-2:    #a8b49a;
+  --skin-accent-3:    #b98fa0;
+  --skin-on-accent:   #1a1013;
+  --skin-hue-weight:  28%;
+  --skin-font-sans:    'Inter', -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --skin-font-mono:    ui-monospace, 'SF Mono', 'Cascadia Code', Consolas, monospace;
+  --skin-font-display: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', Georgia, serif;
+  --skin-glow:  0 0 32px rgba(201, 160, 171, 0.12);
+  --skin-atmos:
+    radial-gradient(circle at 50% 78%, rgba(60, 38, 48, 0.20), transparent 62%),
+    linear-gradient(180deg, #141013 0%, #17121a 55%, #110d10 100%);
+}
+
+/* ---------------------------------------------------------------------
+   旧变量名 alias —— 让原有自定义类零改动跟着换肤
+   --------------------------------------------------------------------- */
+:root {
+  --accent:    var(--skin-accent);
+  --accent-2:  var(--skin-accent-2);
+  --accent-3:  var(--skin-accent-2);
+  --accent-4:  var(--skin-accent-3);
+  --neon-cyan: var(--skin-accent);
+
+  --bg-primary:   var(--skin-canvas);
+  --bg-secondary: var(--skin-panel-2);
+  --bg-tertiary:  var(--skin-panel-2);
+  --bg-card:      var(--skin-panel);
+
+  --text-primary:   var(--skin-ink);
+  --text-secondary: var(--skin-ink-muted);
+  --text-muted:     var(--skin-ink-dim);
+
+  --border-soft:   var(--skin-line);
+  --border-strong: var(--skin-line-strong);
+  --shadow-soft:   var(--skin-glow);
+  --font-mono:     var(--skin-font-mono);
+  --background:    var(--skin-canvas);
+  --foreground:    var(--skin-ink);
+}
+
+/* ---------------------------------------------------------------------
+   基础层
+   --------------------------------------------------------------------- */
+* { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  color-scheme: dark;
+}
+
+
+body {
+  background: var(--skin-atmos);
+  background-attachment: fixed;
+  color: var(--skin-ink);
+  font-family: var(--skin-font-sans);
+  line-height: 1.7;
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+  transition: background-color .4s ease, color .3s ease;
+}
+
+/* 旧版环境光斑：仅非 olive 皮肤显示 */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 50%, color-mix(in oklab, var(--skin-accent) 9%, transparent), transparent 50%),
+    radial-gradient(circle at 80% 80%, color-mix(in oklab, var(--skin-accent-2) 7%, transparent), transparent 50%),
+    radial-gradient(circle at 40% 20%, color-mix(in oklab, var(--skin-accent-3) 5%, transparent), transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+::selection {
+  background: color-mix(in oklab, var(--skin-accent) 35%, transparent);
+  color: var(--skin-ink);
+}
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, var(--skin-accent), var(--skin-accent-2));
+  border-radius: 999px;
+  box-shadow: 0 0 18px color-mix(in oklab, var(--skin-accent) 45%, transparent);
+}
+
+/* ---------------------------------------------------------------------
+   装饰层开关：olive / ink / plum 这类「纸本」皮肤关掉霓虹装饰
+   --------------------------------------------------------------------- */
+[data-skin="olive"] .fx-layer,
+[data-skin="olive"] .atmos-warm,
+[data-skin="olive"] body::before,
+[data-skin="ink"] .fx-layer,
+[data-skin="ink"] .atmos-warm,
+[data-skin="ink"] body::before,
+[data-skin="plum"] .fx-layer,
+[data-skin="plum"] .atmos-warm,
+[data-skin="plum"] body::before {
+  display: none !important;
+}
+
+[data-skin="olive"] .grid-bg,
+[data-skin="ink"] .grid-bg,
+[data-skin="plum"] .grid-bg {
+  opacity: .22;
+}
+/* olive 皮肤：近方角 */
+[data-skin="olive"] .glass-card,
+[data-skin="olive"] .surface,
+[data-skin="olive"] .premium-border {
+  border-radius: 6px !important;
+}
+
+/* olive 皮肤：标题一律衬线 */
+[data-skin="olive"] h1,
+[data-skin="olive"] h2,
+[data-skin="olive"] .title-display {
+  font-family: var(--skin-font-display);
+  font-weight: 400;
+  letter-spacing: .02em;
+}
+
+/* ---------------------------------------------------------------------
+   语义工具类
+   --------------------------------------------------------------------- */
+.surface {
+  background: var(--skin-panel);
+  border: 1px solid var(--skin-line);
+  border-radius: var(--radius-card);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  transition: border-color .3s ease, box-shadow .3s ease, transform .3s ease;
+}
+.surface:hover {
+  border-color: var(--skin-line-strong);
+  box-shadow: var(--skin-glow);
+}
+
+.btn-accent {
+  background: color-mix(in oklab, var(--skin-accent) 14%, transparent);
+  border: 1px solid color-mix(in oklab, var(--skin-accent) 32%, transparent);
+  color: var(--skin-ink);
+  border-radius: 14px;
+  transition: all .28s ease;
+}
+.btn-accent:hover {
+  background: color-mix(in oklab, var(--skin-accent) 22%, transparent);
+  border-color: color-mix(in oklab, var(--skin-accent) 55%, transparent);
+  box-shadow: var(--skin-glow);
+}
+
+.btn-ghost {
+  background: var(--skin-panel-2);
+  border: 1px solid var(--skin-line);
+  color: var(--skin-ink-muted);
+  border-radius: 14px;
+  transition: all .28s ease;
+}
+.btn-ghost:hover { color: var(--skin-ink); border-color: var(--skin-line-strong); }
+
+.field {
+  width: 100%;
+  background: var(--skin-panel-2);
+  border: 1px solid var(--skin-line);
+  border-radius: 14px;
+  padding: .625rem 1rem;
+  color: var(--skin-ink);
+  font-size: .875rem;
+  outline: none;
+  transition: border-color .25s ease, box-shadow .25s ease;
+}
+.field::placeholder { color: var(--skin-ink-dim); opacity: .65; }
+.field:focus {
+  border-color: var(--skin-line-strong);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--skin-accent) 12%, transparent);
+}
+
+.title-gradient {
+  background: linear-gradient(120deg, var(--skin-accent), var(--skin-accent-2), var(--skin-accent-3), var(--skin-accent));
+  background-size: 220% 220%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: skin-gradient-shift 7s ease infinite;
+}
+@keyframes skin-gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50%      { background-position: 100% 50%; }
+}
+
+.meta-label {
+  font-family: var(--skin-font-mono);
+  font-size: 11px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--skin-ink-dim);
+}
+
+.post-meta-row {
+  display: flex;
+  align-items: center;
+  gap: .7rem;
+  font-family: var(--skin-font-mono);
+  font-size: 11.5px;
+  letter-spacing: .04em;
+  color: var(--skin-ink-dim);
+}
+.post-meta-row .kind-article { color: var(--skin-accent); }
+.post-meta-row .kind-thought { color: var(--skin-accent-2); }
+.post-meta-row .sep { opacity: .4; }
+
+.title-display {
+  font-family: var(--skin-font-display);
+  font-weight: 400;
+  letter-spacing: .01em;
+  line-height: 1.55;
+  color: var(--skin-ink);
+}
+
+.thought-rail { position: relative; padding-left: 1.1rem; }
+.thought-rail::before {
+  content: '';
+  position: absolute;
+  left: 0; top: .6rem; bottom: .6rem;
+  width: 2px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, var(--skin-accent-2), transparent);
+}
+
+.kbd {
+  font-family: var(--skin-font-mono);
+  font-size: 10.5px;
+  letter-spacing: .06em;
+  color: var(--skin-ink-dim);
+  border: 1px solid var(--skin-line);
+  border-radius: 4px;
+  padding: .1rem .35rem;
+}
+
+/* =====================================================================
+   以下为原有自定义类：类名与结构保持不变，颜色全部改为皮肤变量
+   ===================================================================== */
+
+/* ---------- 霓虹呼吸 ---------- */
+@keyframes neon-glow {
+  0%, 100% {
+    text-shadow:
+      0 0 10px color-mix(in oklab, var(--skin-accent) 80%, transparent),
+      0 0 20px color-mix(in oklab, var(--skin-accent) 50%, transparent);
+  }
+  50% {
+    text-shadow:
+      0 0 20px color-mix(in oklab, var(--skin-accent) 100%, transparent),
+      0 0 40px color-mix(in oklab, var(--skin-accent-2) 70%, transparent);
+  }
+}
+.neon-glow { animation: neon-glow 2s ease-in-out infinite; }
+
+@keyframes gradient-shift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.gradient-animate {
+  background-size: 200% 200%;
+  animation: gradient-shift 6s ease infinite;
+}
+
+/* ---------- 文字色工具 ---------- */
+.premium-text-silver { color: var(--skin-accent); }
+.premium-text-gold   { color: var(--skin-accent-2); }
+.premium-text-blue   { color: var(--skin-accent-2); }
+
+/* ---------- 玻璃边框 ---------- */
+.glass-border {
+  border: 1px solid var(--skin-line);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  transition: all .3s ease;
+}
+.glass-border:hover {
+  border-color: var(--skin-line-strong);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* ---------- 全息边框 ---------- */
+@keyframes border-hologram {
+  0%, 100% {
+    border-color: color-mix(in oklab, var(--skin-accent) 30%, transparent);
+    box-shadow: 0 0 30px color-mix(in oklab, var(--skin-accent) 18%, transparent),
+                inset 0 0 20px color-mix(in oklab, var(--skin-accent) 5%, transparent);
+  }
+  50% {
+    border-color: color-mix(in oklab, var(--skin-accent-2) 30%, transparent);
+    box-shadow: 0 0 50px color-mix(in oklab, var(--skin-accent-2) 22%, transparent),
+                inset 0 0 30px color-mix(in oklab, var(--skin-accent-2) 9%, transparent);
+  }
+}
+.premium-border {
+  position: relative;
+  background: var(--skin-panel);
+  border-radius: 24px;
+  animation: border-hologram 4s ease-in-out infinite;
+}
+.premium-border::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: 26px;
+  background: linear-gradient(135deg,
+    color-mix(in oklab, var(--skin-accent) 30%, transparent),
+    color-mix(in oklab, var(--skin-accent-2) 20%, transparent));
+  z-index: -1;
+  opacity: 0;
+  transition: opacity .4s ease;
+}
+.premium-border:hover::before { opacity: 1; }
+
+/* ---------- 打字机光标 ---------- */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0; }
+}
+.cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background: var(--skin-accent);
+  margin-left: 4px;
+  animation: blink 1s step-end infinite;
+  vertical-align: middle;
+}
+
+/* ---------- 渐变文字 ---------- */
+.gradient-text {
+  background: linear-gradient(135deg, var(--skin-accent), var(--skin-accent-2), var(--skin-accent-3), var(--skin-accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradient-shift 6s ease infinite;
+  background-size: 200% 200%;
+  filter: drop-shadow(0 0 10px color-mix(in oklab, var(--skin-accent) 45%, transparent));
+}
+.gradient-text-premium {
+  background: linear-gradient(135deg, var(--skin-accent), var(--skin-accent-2), var(--skin-accent-3));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ---------- 浮动 ---------- */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
+}
+.float { animation: float 4s ease-in-out infinite; }
+
+/* ---------- 呼吸光晕 ---------- */
+@keyframes premium-pulse {
+  0%, 100% {
+    box-shadow: 0 0 15px color-mix(in oklab, var(--skin-accent) 30%, transparent),
+                0 0 30px color-mix(in oklab, var(--skin-accent) 10%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 30px color-mix(in oklab, var(--skin-accent) 60%, transparent),
+                0 0 60px color-mix(in oklab, var(--skin-accent-2) 40%, transparent);
+  }
+}
+.premium-pulse { animation: premium-pulse 2s ease-in-out infinite; }
+
+/* ---------- 网格背景 ---------- */
+.grid-bg {
+  background-image:
+    linear-gradient(color-mix(in oklab, var(--skin-ink) 6%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in oklab, var(--skin-ink) 6%, transparent) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: radial-gradient(circle at center, #000 45%, transparent 100%);
+  -webkit-mask-image: radial-gradient(circle at center, #000 45%, transparent 100%);
+}
+
+/* ---------- 正文排版（替代 typography 插件） ---------- */
+.prose {
+  color: var(--skin-ink-muted);
+  font-size: 1.0625rem;
+  line-height: 1.85;
+}
+.prose h2,
+.prose h3,
+.prose h4 {
+  letter-spacing: -.02em;
+  color: var(--skin-ink);
+  font-family: var(--skin-font-display);
+  font-weight: 700;
+}
+.prose h2 { font-size: 1.6rem; margin: 2.4rem 0 .9rem; }
+.prose h3 { font-size: 1.25rem; margin: 1.9rem 0 .7rem; }
+.prose h4 { font-size: 1.05rem; margin: 1.5rem 0 .6rem; }
+.prose p  { margin: 1rem 0; }
+.prose strong { color: var(--skin-ink); font-weight: 700; }
+.prose a {
+  color: var(--skin-accent);
+  text-decoration: none;
+  transition: opacity .25s ease;
+}
+.prose a:hover { opacity: .85; text-decoration: underline; }
+.prose ul,
+.prose ol { margin: 1rem 0 1rem 1.4rem; }
+.prose li { margin: .4rem 0; }
+.prose blockquote {
+  border-left: 3px solid var(--skin-line-strong);
+  background: var(--skin-panel-2);
+  padding: .9rem 1rem;
+  border-radius: 0 14px 14px 0;
+  color: var(--skin-ink-muted);
+}
+.prose pre {
+  border: 1px solid var(--skin-line);
+  border-radius: 18px;
+  padding: 1rem 1.1rem;
+  overflow-x: auto;
+  background: color-mix(in oklab, var(--skin-canvas) 85%, var(--skin-ink));
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .22);
+  font-family: var(--skin-font-mono);
+  font-size: .85rem;
+  line-height: 1.65;
+}
+.prose code { font-family: var(--skin-font-mono); font-size: .88em; }
+.prose :not(pre) > code {
+  padding: .15em .4em;
+  border-radius: 6px;
+  background: var(--skin-panel-2);
+  border: 1px solid var(--skin-line);
+  color: var(--skin-accent);
+}
+.prose code::before,
+.prose code::after { content: none; }
+.prose img { border-radius: 18px; margin: 1.6rem 0; max-width: 100%; height: auto; }
+.prose hr { border: 0; border-top: 1px solid var(--skin-line); margin: 2.4rem 0; }
+
+/* ---------- 阅读进度 ---------- */
+#reading-progress {
+  position: fixed;
+  top: 0; left: 0;
+  height: 3px;
+  background: linear-gradient(to right, var(--skin-accent), var(--skin-accent-2), var(--skin-accent-3));
+  z-index: 1000;
+  transition: width .1s linear;
+  box-shadow: var(--skin-glow);
+}
+
+/* ---------- 标签胶囊 ---------- */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: .35rem .8rem;
+  border-radius: 999px;
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  border: 1px solid color-mix(in oklab, var(--skin-accent) 30%, transparent);
+  color: var(--skin-accent);
+  background: color-mix(in oklab, var(--skin-accent) 10%, transparent);
+  transition: all .25s ease;
+  cursor: pointer;
+}
+.tag:hover,
+.tag.active {
+  color: var(--skin-ink);
+  background: color-mix(in oklab, var(--skin-accent) 22%, transparent);
+  border-color: color-mix(in oklab, var(--skin-accent-2) 45%, transparent);
+  box-shadow: 0 0 20px color-mix(in oklab, var(--skin-accent) 22%, transparent);
+}
+[data-skin="olive"] .tag {
+  border-radius: 3px;
+  letter-spacing: .12em;
+}
+
+/* ---------- 瀑布流 ---------- */
+.masonry { columns: 3; column-gap: 1rem; }
+.masonry-item { break-inside: avoid; margin-bottom: 1rem; }
+@media (max-width: 768px) { .masonry { columns: 2; } }
+@media (max-width: 480px) { .masonry { columns: 1; } }
+
+/* ---------- 时间轴 ---------- */
+.timeline-line {
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--skin-accent), var(--skin-accent-2), transparent);
+  box-shadow: 0 0 20px color-mix(in oklab, var(--skin-accent) 40%, transparent);
+}
+.timeline-dot {
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--skin-accent), var(--skin-accent-2));
+  box-shadow:
+    0 0 20px color-mix(in oklab, var(--skin-accent) 80%, transparent),
+    0 0 40px color-mix(in oklab, var(--skin-accent-2) 45%, transparent),
+    inset 0 0 10px rgba(255, 255, 255, .3);
+  position: absolute;
+  left: -7px;
+  animation: pulse-hologram 2s ease-in-out infinite;
+}
+@keyframes pulse-hologram {
+  0%, 100% {
+    box-shadow:
+      0 0 20px color-mix(in oklab, var(--skin-accent) 80%, transparent),
+      0 0 40px color-mix(in oklab, var(--skin-accent-2) 45%, transparent),
+      inset 0 0 10px rgba(255, 255, 255, .3);
+  }
+  50% {
+    box-shadow:
+      0 0 40px color-mix(in oklab, var(--skin-accent) 100%, transparent),
+      0 0 80px color-mix(in oklab, var(--skin-accent-2) 65%, transparent),
+      inset 0 0 20px rgba(255, 255, 255, .45);
+  }
+}
+
+/* ---------- 玻璃卡片 ---------- */
+.glass-card {
+  background: var(--skin-panel);
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+  border: 1px solid var(--skin-line);
+  border-radius: 24px;
+  box-shadow:
+    0 0 40px color-mix(in oklab, var(--skin-accent) 10%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, .06);
+  transition: all .3s ease;
+  position: relative;
+  overflow: hidden;
+}
+[data-skin="warm"] .glass-card,
+[data-skin="neon"] .glass-card {
+  border-width: 2px;
+  border-color: color-mix(in oklab, var(--skin-accent) 20%, transparent);
+}
+.glass-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--skin-accent) 8%, transparent), transparent);
+  animation: hologram-scan 3s infinite;
+  pointer-events: none;
+}
+[data-skin="olive"] .glass-card::before,
+[data-skin="ink"] .glass-card::before,
+[data-skin="plum"] .glass-card::before { display: none; }
+
+@keyframes hologram-scan {
+  0%   { left: -100%; }
+  100% { left: 100%; }
+}
+
+/* ---------- 全息文字 ---------- */
+@keyframes liquid-morph {
+  0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+  25%      { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+  50%      { border-radius: 70% 30% 40% 60% / 30% 60% 60% 40%; }
+  75%      { border-radius: 40% 70% 60% 30% / 70% 40% 30% 60%; }
+}
+@keyframes hologram-flicker {
+  0%, 100% {
+    opacity: 1;
+    text-shadow: 0 0 10px color-mix(in oklab, var(--skin-accent) 70%, transparent),
+                 0 0 20px color-mix(in oklab, var(--skin-accent-2) 35%, transparent);
+  }
+  50% {
+    opacity: .97;
+    text-shadow: 0 0 20px color-mix(in oklab, var(--skin-accent) 85%, transparent),
+                 0 0 40px color-mix(in oklab, var(--skin-accent-2) 50%, transparent);
+  }
+}
+@keyframes mirror-reflect {
+  0%, 100% { transform: translateY(0) scaleY(1); opacity: .22; }
+  50%      { transform: translateY(10px) scaleY(.8); opacity: .08; }
+}
+
+.hologram-text {
+  animation: hologram-flicker 3s ease-in-out infinite;
+  position: relative;
+}
+.hologram-text::after {
+  content: attr(data-text);
+  position: absolute;
+  left: 0;
+  top: 100%;
+  width: 100%;
+  color: color-mix(in oklab, var(--skin-accent) 30%, transparent);
+  animation: mirror-reflect 3s ease-in-out infinite;
+  transform: scaleY(-1);
+  filter: blur(2px);
+  pointer-events: none;
+  z-index: -1;
+}
+/* 纸本皮肤：倒影直接去掉，避免压住副标题 */
+[data-skin="olive"] .hologram-text::after,
+[data-skin="ink"] .hologram-text::after,
+[data-skin="plum"] .hologram-text::after { display: none; }
+
+
+.liquid-blob { animation: liquid-morph 6s ease-in-out infinite; }
+
+/* ---------- 减弱动效 ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+  }
+}
+
+
+/* =====================================================================
+   静态模式：去掉全站装饰性动效
+   ===================================================================== */
+html { scroll-behavior: auto; }
+
+.neon-glow,
+.gradient-text,
+.gradient-text-premium,
+.gradient-animate,
+.premium-pulse,
+.float,
+.liquid-blob,
+.hologram-text,
+.premium-border,
+.timeline-dot,
+.animate-pulse {
+  animation: none !important;
+}
+
+.glass-card::before,
+.hologram-text::after {
+  display: none !important;
+}
+
+
+/* =====================================================================
+   编辑式标签体系（替代边框胶囊）
+   原则：靠字号、字距、颜色分层，不靠边框和底色
+   ===================================================================== */
+
+/* 书眉：中文小字 + 极小的拉丁字母，靠字距拉开，不加线不加斜体 */
+.label-rule {
+  display: flex;
+  align-items: baseline;
+  gap: .7rem;
+  font-size: .75rem;
+  letter-spacing: .22em;
+  color: var(--skin-ink-muted);
+}
+.label-rule > em {
+  font-family: var(--skin-font-mono);
+  font-style: normal;
+  font-size: .5625rem;
+  letter-spacing: .32em;
+  text-transform: uppercase;
+  color: var(--skin-ink-dim);
+  opacity: .7;
+}
+
+/* 题目：裸文本，无框无底，靠 # 和颜色区分 */
+.term {
+  font-family: var(--skin-font-mono);
+  font-size: .6875rem;
+  letter-spacing: .1em;
+  color: var(--skin-ink-dim);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color .15s ease;
+}
+.term::before {
+  content: '#';
+  opacity: .45;
+  margin-right: .05em;
+}
+.term:hover {
+  color: var(--skin-accent);
+  border-bottom: 1px solid color-mix(in oklab, var(--skin-accent) 60%, transparent);
+}
+
+/* 元信息行：日期 + 类型记号 */
+.meta-line {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: .65rem;
+  font-family: var(--skin-font-mono);
+  font-size: 10.5px;
+  letter-spacing: .08em;
+  color: var(--skin-ink-dim);
+}
+.meta-line .sep { opacity: .35; }
+
+/* 类型记号：想法用 ※，文章用 §，衬线斜体，不做胶囊 */
+.kind-mark {
+  font-family: var(--skin-font-display);
+  font-style: italic;
+  font-size: 12.5px;
+  letter-spacing: .02em;
+}
+.kind-mark.thought { color: color-mix(in oklab, var(--skin-accent-2) 85%, var(--skin-ink)); }
+.kind-mark.article { color: color-mix(in oklab, var(--skin-accent) 85%, var(--skin-ink)); }
+
+/* 筛选器：裸文字按钮 */
+.filter-term {
+  font-family: var(--skin-font-mono);
+  font-size: 11.5px;
+  letter-spacing: .08em;
+  color: var(--skin-ink-dim);
+  padding: 0 0 .15rem;
+  border: 0;
+  background: none;
+  transition: color .15s ease, border-color .15s ease;
+}
+.filter-term:hover { color: var(--skin-ink-muted); }
+.filter-term[data-active='true'] {
+  color: var(--skin-accent);
+  border-bottom: 1px solid color-mix(in oklab, var(--skin-accent) 55%, transparent);
+}
+
+
+/* =====================================================================
+   排版标度：把散落的 text-[13.5px] / leading-8 / max-w-[58ch] 收成命名层级
+   用的时候只写一个类，不再拼像素
+   ===================================================================== */
+
+/* 一级标题：首页那个大标题 */
+.type-display-1 {
+  font-family: var(--skin-font-display);
+  font-weight: 400;
+  font-size: clamp(1.65rem, 2.7vw, 2.35rem);
+  line-height: 1.75;
+  letter-spacing: .04em;
+  color: var(--skin-ink);
+  max-width: 24ch;
+}
+
+/* 二级标题：页面标题（想法 / 题目 / 专题） */
+.type-display-2 {
+  font-family: var(--skin-font-display);
+  font-weight: 400;
+  font-size: clamp(1.45rem, 2.1vw, 1.9rem);
+  line-height: 1.8;
+  letter-spacing: .05em;
+  color: var(--skin-ink);
+}
+
+/* 条目标题：文章列表里的标题 */
+.type-title {
+  font-family: var(--skin-font-display);
+  font-weight: 400;
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  letter-spacing: .03em;
+  color: var(--skin-ink);
+}
+
+/* 题记：页面开头那句主张。衬线 + 首行缩进两字 + 松行距 */
+.epigraph {
+  font-family: var(--skin-font-display);
+  font-size: 1.0625rem;
+  line-height: 2.05;
+  color: var(--skin-ink-muted);
+  max-width: 52ch;
+  text-indent: 2em;
+}
+
+/* 正文：想法 / 文章摘要的默认文字 */
+.body-text {
+  font-size: 1rem;
+  line-height: 1.95;
+  color: color-mix(in oklab, var(--skin-ink) 88%, transparent);
+  max-width: 62ch;
+}
+
+/* 注：更小的说明文字 */
+.note {
+  font-size: .8125rem;
+  line-height: 1.75;
+  color: var(--skin-ink-muted);
+  max-width: 62ch;
+}
+
+/* 计数 / 索引：10.5px mono，用于「全部 4 条 →」「1」这种 */
+.type-count {
+  font-family: var(--skin-font-mono);
+  font-size: 10.5px;
+  letter-spacing: .1em;
+  color: var(--skin-ink-dim);
+  white-space: nowrap;
+}
+
+/* 列表项名称：题目 / 导航这类 13.5px 文字 */
+.type-item {
+  font-size: .84375rem;
+  line-height: 1.6;
+  color: color-mix(in oklab, var(--skin-ink) 82%, transparent);
+}

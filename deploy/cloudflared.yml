@@ -1,0 +1,21 @@
+# Cloudflare Tunnel：家里旧笔记本 / 无公网 IP 的机器用这套
+# 1) cloudflared tunnel login
+# 2) cloudflared tunnel create cyberlog        → 记下 UUID
+# 3) 把本文件放到 ~/.cloudflared/config.yml，替换 TUNNEL_UUID 和用户名
+# 4) cloudflared tunnel route dns cyberlog shidagu.online
+# 5) sudo cloudflared service install          → 开机自启
+#
+# 好处：不需要公网 IP、不需要开端口、不需要备案、证书由 Cloudflare 免费签发
+tunnel: TUNNEL_UUID
+credentials-file: /home/YOUR_USER/.cloudflared/TUNNEL_UUID.json
+
+ingress:
+  - hostname: shidagu.online
+    service: http://localhost:3000
+    originRequest:
+      connectTimeout: 30s
+      # 视频上传 50MB，默认超时要放宽
+      httpHostHeader: shidagu.online
+  - hostname: www.shidagu.online
+    service: http://localhost:3000
+  - service: http_status:404
