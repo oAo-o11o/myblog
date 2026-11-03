@@ -6,6 +6,9 @@ const isStatic = process.env.BUILD_TARGET === 'static'
 const basePath = process.env.BASE_PATH || ''
 
 const nextConfig: NextConfig = {
+  // 关掉开发模式左下角那个 Next.js 浮标（只在 next dev 出现，不影响线上）
+  devIndicators: false,
+
   ...(isStatic ? { output: 'export' as const, trailingSlash: true } : {}),
   ...(isStatic && basePath ? { basePath } : {}),
 
