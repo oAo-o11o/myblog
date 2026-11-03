@@ -19,6 +19,13 @@ async function verifyAdmin(req: NextRequest) {
   }
 }
 
+/** 把 YAML 解析出的日期（可能是 Date 对象或 ISO 串）统一成 YYYY-MM-DD */
+function normalizeDate(v: unknown): string {
+  if (!v) return ''
+  if (v instanceof Date) return v.toISOString().slice(0, 10)
+  return String(v).slice(0, 10)
+}
+
 export async function GET(req: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
   if (!(await verifyAdmin(req))) {
     return NextResponse.json({ error: '未授权' }, { status: 401 })
@@ -35,11 +42,15 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ slug
   const { data, content } = matter(raw)
 
   return NextResponse.json({
-    title: data.title ?? '',
-    date: data.date ?? '',
-    excerpt: data.excerpt ?? '',
-    tags: data.tags ?? [],
-    cover: data.cover ?? '',
+    slug,
+    kind: data.kind === 'thought' ? 'thought' : 'article',
+    title: typeof data.title === 'string' ? data.title : '',
+    date: normalizeDate(data.date),
+    excerpt: typeof data.excerpt === 'string' ? data.excerpt : '',
+    topics: Array.isArray(data.topics) ? data.topics : [],
+    media: Array.isArray(data.media) ? data.media : [],
+    tags: Array.isArray(data.tags) ? data.tags : [],
+    cover: typeof data.cover === 'string' ? data.cover : '',
     content,
   })
 }
