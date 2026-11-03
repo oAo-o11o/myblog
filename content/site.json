@@ -1,9 +1,9 @@
 {
-  "name": "数字角落",
+  "name": "思考角落",
   "nameEn": "digital corner",
   "tagline1": "想清楚之前，",
   "tagline2": "先写下来。",
-  "epigraph": "学计算机，学数学，读哲学，做的其实是同一件事：把没说清楚的东西，一点一点说清楚。这里留下的是过程。有些事情后来想通了，多数还没有。",
+  "epigraph": "把没说清楚的东西，一点一点说清楚。这里留下的是过程。有些事情后来想通了，多数还没有。",
   "skin": "olive",
   "footerNote": "built with next.js"
 }

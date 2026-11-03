@@ -1,41 +1,67 @@
 {
   "name": "Sailor",
   "handle": "@digitalcorner",
-  "role": "Builder / Writer / Learner",
-  "status": "Personal site · Work in progress",
-  "avatarEmoji": "✦",
-  "introTitle": "About",
-  "introSubtitle": "A brief note on who I am, what I build, and what I keep here.",
+  "role": "Student / Builder / Observer",
+  "status": "Learning, building, becoming.",
+  "avatarEmoji": "⌁",
+  "introTitle": "Between Bits and Life",
+  "introSubtitle": "A personal space for technology, ideas, memories, and everything still in progress.",
   "bio": [
-    "This site is a small corner where I keep notes, projects, visuals, and progress.",
-    "I use it to document what I am learning, what I am building, and what is still unfinished.",
-    "Some things become posts. Some become images. Some stay here as traces of work in progress."
+    "A personal space for technology, ideas, memories, and everything still in progress.",
+    "Digital Corner is where I keep what I learn and what I notice: technical notes, unfinished questions, projects, photographs, ordinary days, and moments worth remembering.",
+    "I do not have everything figured out. I am learning to think more clearly, build more patiently, and become myself over time.",
+    "The world is worth understanding—and worth loving."
   ],
   "skills": [
     {
-      "name": "JavaScript / TypeScript",
-      "level": 82,
-      "color": "#00ff88"
+      "name": "Reverse Engineering",
+      "level": 50,
+      "color": "var(--skin-accent)"
     },
     {
-      "name": "React / Next.js",
-      "level": 80,
-      "color": "#00d4ff"
+      "name": "Systems Programming",
+      "level": 50,
+      "color": "var(--skin-accent)"
     },
     {
-      "name": "Node.js",
-      "level": 72,
-      "color": "#ff0090"
+      "name": "Web Development",
+      "level": 50,
+      "color": "var(--skin-accent)"
     },
     {
-      "name": "Linux / Deployment",
-      "level": 70,
-      "color": "#b537f2"
+      "name": "C / C++",
+      "level": 50,
+      "color": "var(--skin-accent)"
     },
     {
-      "name": "Writing / Documentation",
-      "level": 78,
-      "color": "#00ff88"
+      "name": "Python",
+      "level": 50,
+      "color": "var(--skin-accent)"
+    },
+    {
+      "name": "Linux",
+      "level": 50,
+      "color": "var(--skin-accent)"
+    },
+    {
+      "name": "Git",
+      "level": 50,
+      "color": "var(--skin-accent)"
+    },
+    {
+      "name": "Technical Writing",
+      "level": 50,
+      "color": "var(--skin-accent)"
+    },
+    {
+      "name": "Photography",
+      "level": 50,
+      "color": "var(--skin-accent)"
+    },
+    {
+      "name": "Continuous Learning",
+      "level": 50,
+      "color": "var(--skin-accent)"
     }
   ],
   "interests": [
@@ -59,12 +85,6 @@
     }
   ],
   "tools": [
-    "Next.js",
-    "React",
-    "TypeScript",
-    "Node.js",
-    "Tailwind CSS",
-    "Linux",
     "PM2",
     "Cloudflare",
     "Git",
