@@ -55,8 +55,19 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 Write-Host "==> 等部署（约 1 分钟）" -ForegroundColor Cyan
-Start-Sleep -Seconds 8
-gh run watch --repo oAo-o11o/myblog --exit-status
+$sha = (git rev-parse HEAD).Trim()
+$runId = ""
+for ($i = 0; $i -lt 12; $i++) {
+  Start-Sleep -Seconds 5
+  $runId = (gh run list --repo oAo-o11o/myblog --limit 10 --json databaseId,headSha -q "[.[] | select(.headSha == `"$sha`")][0].databaseId" 2>$null)
+  if ($runId) { break }
+}
+if (-not $runId) {
+  Write-Host "    还没看到这次提交的运行，去网页看：" -ForegroundColor Yellow
+  Write-Host "    https://github.com/oAo-o11o/myblog/actions" -ForegroundColor Yellow
+  exit 0
+}
+gh run watch $runId --repo oAo-o11o/myblog --exit-status --compact | Select-Object -Last 6
 if ($LASTEXITCODE -eq 0) {
   Write-Host ""
   Write-Host "完成：https://oao-o11o.github.io/myblog/" -ForegroundColor Green
