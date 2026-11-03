@@ -12,7 +12,7 @@ interface Props {
 
 /** 静态导出（GitHub Pages）需要预先知道所有题目 */
 export function generateStaticParams() {
-  return getTopicStats().map((t) => ({ topic: encodeURIComponent(t.name) }))
+  return getTopicStats().map((t) => ({ topic: t.name }))
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
