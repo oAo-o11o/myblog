@@ -35,6 +35,17 @@ grep -rl "/api/upload/videos" components app 2>/dev/null | while read -r f; do
   sed -i "s|/api/upload/videos|/gallery-videos.json|g" "$f"
 done
 
+echo "==> 内容为 0 时，移出详情页路由"
+# export 模式不允许「空参数的动态路由」：grep 不到任何 mdx 时，
+# /blog/[slug] 与 /topics/[topic] 的 generateStaticParams 返回空数组，
+# Next 会报 "missing generateStaticParams()" 把整个构建搞挂。
+POST_COUNT=$(ls content/posts/*.mdx 2>/dev/null | wc -l | tr -d ' ')
+if [ "$POST_COUNT" -eq 0 ]; then
+  echo "    没有内容，跳过详情页路由"
+  [ -d "app/blog/[slug]" ]    && mv "app/blog/[slug]"    .disabled/blog-slug    || true
+  [ -d "app/topics/[topic]" ] && mv "app/topics/[topic]" .disabled/topics-topic || true
+fi
+
 echo "==> 静态导出"
 npx next build
 
