@@ -79,6 +79,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ slug
 }
 
 // DELETE /api/posts/[slug] — 删除内容
+// 不真删：移到 content/.trash/，误删可以从回收站捞回来
 export async function DELETE(req: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
   if (!(await verifyAdmin(req))) {
     return NextResponse.json({ error: '未授权' }, { status: 401 })
@@ -91,12 +92,16 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ s
     return NextResponse.json({ error: '文章不存在' }, { status: 404 })
   }
 
-  fs.unlinkSync(filePath)
+  const trashDir = path.join(process.cwd(), 'content', '.trash')
+  if (!fs.existsSync(trashDir)) fs.mkdirSync(trashDir, { recursive: true })
+
+  const stamp = new Date().toISOString().replace(/[:.]/g, '-')
+  fs.renameSync(filePath, path.join(trashDir, `${slug}__${stamp}.mdx`))
 
   revalidatePath('/')
   revalidatePath('/notes')
   revalidatePath('/blog')
   revalidatePath('/topics')
 
-  return NextResponse.json({ ok: true })
+  return NextResponse.json({ ok: true, movedTo: 'content/.trash' })
 }
