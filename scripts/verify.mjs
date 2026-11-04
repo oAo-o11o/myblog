@@ -86,7 +86,7 @@ async function main() {
   console.log(`模式：${mode}\n`)
 
   // ---------- 页面 ----------
-  const pages = ['/', '/notes', '/topics', '/blog', '/about', '/gallery', '/timeline']
+  const pages = ['/', '/notes', '/topics', '/blog', '/life', '/about', '/gallery', '/timeline']
   for (const p of pages) {
     await check(`页面 ${p}`, async () => {
       const res = await page(p)
