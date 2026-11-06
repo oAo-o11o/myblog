@@ -34,6 +34,7 @@ export async function PUT(req: NextRequest) {
   const next: SiteConfig = {
     name: typeof body.name === 'string' && body.name.trim() ? body.name.trim() : current.name,
     nameEn: typeof body.nameEn === 'string' ? body.nameEn.trim() : current.nameEn,
+    url: typeof body.url === 'string' ? body.url.trim().replace(/\/+$/, '') : current.url,
     tagline1: typeof body.tagline1 === 'string' ? body.tagline1 : current.tagline1,
     tagline2: typeof body.tagline2 === 'string' ? body.tagline2 : current.tagline2,
     epigraph: typeof body.epigraph === 'string' ? body.epigraph : current.epigraph,
