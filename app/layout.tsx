@@ -8,7 +8,10 @@ import { readSite } from '@/lib/site'
 
 export function generateMetadata(): Metadata {
   const site = readSite()
+  const base = site.url || 'http://localhost:3000'
+
   return {
+    metadataBase: new URL(base),
     title: {
       default: site.name,
       template: `%s · ${site.name}`,
@@ -16,11 +19,26 @@ export function generateMetadata(): Metadata {
     description: site.epigraph,
     keywords: ['思考', '数学', '计算机', '哲学', '记录'],
     authors: [{ name: site.name }],
+    alternates: {
+      canonical: '/',
+      types: {
+        'application/rss+xml': `${base}/feed.xml`,
+      },
+    },
     openGraph: {
       type: 'website',
       locale: 'zh_CN',
       siteName: site.name,
+      url: base,
+      title: site.name,
       description: site.epigraph,
+      images: [`${base}/og.png`],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: site.name,
+      description: site.epigraph,
+      images: [`${base}/og.png`],
     },
   }
 }
