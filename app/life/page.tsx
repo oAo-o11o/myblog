@@ -12,15 +12,14 @@ export const metadata = {
 /** 专栏的判定：题目里带这个词的内容，都会出现在这里 */
 const COLUMN = '生活'
 
-function monthLabel(ym: string) {
+function monthParts(ym: string) {
   const [y, m] = ym.split('-')
-  return `${y} 年 ${Number(m)} 月`
+  return { year: y, month: String(Number(m)) }
 }
 
 export default function LifePage() {
   const entries = getAllEntries().filter((e) => e.topics?.includes(COLUMN))
 
-  // 按月份分组，保持时间倒序
   const groups: { month: string; items: typeof entries }[] = []
   for (const e of entries) {
     const month = e.date.slice(0, 7)
@@ -30,8 +29,8 @@ export default function LifePage() {
   }
 
   return (
-    <div className="min-h-screen max-w-3xl mx-auto px-6 pt-32 pb-24">
-      <header className="mb-16">
+    <div className="min-h-screen max-w-4xl mx-auto px-6 pt-32 pb-24">
+      <header className="mb-20">
         <div className="label-rule mb-8">
           生活 <em>life</em>
         </div>
@@ -41,48 +40,89 @@ export default function LifePage() {
         </p>
       </header>
 
-      {groups.map((group) => (
-        <section key={group.month} className="mb-16">
-          <div className="label-rule mb-8">{monthLabel(group.month)}</div>
+      {groups.map((group) => {
+        const { year, month } = monthParts(group.month)
+        const imageCount = group.items.filter((e) => (e.media?.length ?? 0) > 0).length
 
-          <div className="space-y-12">
-            {group.items.map((e) => (
-              <article key={e.slug} className="thought-rail">
-                <div className="meta-line mb-3">
-                  <time>{e.date}</time>
-                  {e.topics.filter((t) => t !== COLUMN).length > 0 && <span className="sep">·</span>}
-                  {e.topics
-                    .filter((t) => t !== COLUMN)
-                    .map((topic) => (
-                      <Link
-                        key={topic}
-                        href={`/topics/${encodeURIComponent(topic)}`}
-                        className="term"
-                      >
-                        {topic}
-                      </Link>
-                    ))}
-                </div>
+        return (
+          <section key={group.month} className="mb-24">
+            {/* 月份：一个大号数字当锚点，不放框线 */}
+            <div className="flex items-baseline gap-5 mb-10">
+              <span className="font-mono text-[3.25rem] leading-[0.8] text-ink/15 select-none">
+                {month}
+              </span>
+              <span className="label-rule">
+                {year} 年 {Number(month)} 月 · {group.items.length} 条
+                {imageCount > 0 && ` · ${imageCount} 张图`}
+              </span>
+            </div>
 
-                {e.kind === 'article' ? (
-                  <>
-                    <h2 className="type-title">
-                      <Link href={`/blog/${e.slug}`} className="hover:text-accent transition-colors">
-                        {e.title}
-                      </Link>
-                    </h2>
-                    {e.excerpt && <p className="note mt-3">{e.excerpt}</p>}
-                  </>
-                ) : (
-                  <p className="body-text whitespace-pre-wrap">{e.body}</p>
-                )}
+            <div className="space-y-14">
+              {group.items.map((e) => {
+                const hasMedia = (e.media?.length ?? 0) > 0
+                const day = e.date.slice(5).replace('-', '.')
 
-                <MediaStrip media={e.media} />
-              </article>
-            ))}
-          </div>
-        </section>
-      ))}
+                return (
+                  <article
+                    key={e.slug}
+                    className="grid grid-cols-[3.5rem_1fr] sm:grid-cols-[5rem_1fr] gap-4 sm:gap-8"
+                  >
+                    <div className="meta-line pt-1">{day}</div>
+
+                    <div className={hasMedia ? '' : 'max-w-[46ch]'}>
+                      {/* 有图的条目：先看图，文字当说明 */}
+                      {hasMedia && <MediaStrip media={e.media} />}
+
+                      {e.kind === 'article' ? (
+                        <>
+                          <h2 className={`type-title ${hasMedia ? 'mt-5' : ''}`}>
+                            <Link
+                              href={`/blog/${e.slug}`}
+                              className="hover:text-accent transition-colors"
+                            >
+                              {e.title}
+                            </Link>
+                          </h2>
+                          {e.excerpt && <p className="note mt-3">{e.excerpt}</p>}
+                        </>
+                      ) : (
+                        <p
+                          className={
+                            hasMedia
+                              ? 'note mt-5 !text-[.875rem] !leading-[1.9]'
+                              : 'body-text whitespace-pre-wrap'
+                          }
+                        >
+                          {e.body}
+                        </p>
+                      )}
+
+                      {/* 没图的条目，媒体组件已经在上面渲染过 */}
+                      {!hasMedia && <MediaStrip media={e.media} />}
+
+                      {e.topics.filter((t) => t !== COLUMN).length > 0 && (
+                        <div className="meta-line mt-4">
+                          {e.topics
+                            .filter((t) => t !== COLUMN)
+                            .map((topic) => (
+                              <Link
+                                key={topic}
+                                href={`/topics/${encodeURIComponent(topic)}`}
+                                className="term"
+                              >
+                                {topic}
+                              </Link>
+                            ))}
+                        </div>
+                      )}
+                    </div>
+                  </article>
+                )
+              })}
+            </div>
+          </section>
+        )
+      })}
 
       {entries.length === 0 && (
         <div className="py-10">
