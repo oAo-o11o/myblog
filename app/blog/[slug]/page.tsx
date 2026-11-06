@@ -6,6 +6,7 @@ import PostBody from '@/components/blog/PostBody'
 import MediaStrip from '@/components/content/MediaStrip'
 import Link from 'next/link'
 import type { Metadata } from 'next'
+import { readSite } from '@/lib/site'
 
 export const dynamic = 'force-dynamic'
 
@@ -22,7 +23,40 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   const post = getPostBySlug(slug)
   if (!post) return {}
-  return { title: post.title, description: post.excerpt }
+
+  const site = readSite()
+  const base = site.url || 'http://localhost:3000'
+
+  // 分享图优先级：附带媒体里的第一张图 → 正文里的第一张图 → 站点默认卡片
+  const mediaImage = post.media?.find((m) => /\.(jpe?g|png|webp|gif)$/i.test(m))
+  const bodyImage = post.body.match(/!\[[^\]]*\]\(([^)]+\.(?:jpe?g|png|webp|gif))\)/i)?.[1]
+  const image = mediaImage
+    ? `${base}/photos/${mediaImage}`
+    : bodyImage
+      ? `${base}${bodyImage.startsWith('/') ? '' : '/'}${bodyImage}`
+      : `${base}/og.png`
+  const images = [image]
+
+  return {
+    title: post.title || '一条想法',
+    description: post.excerpt || post.body.slice(0, 120),
+    alternates: { canonical: `${base}/blog/${slug}/` },
+    openGraph: {
+      type: 'article',
+      url: `${base}/blog/${slug}/`,
+      title: post.title || '一条想法',
+      description: post.excerpt || post.body.slice(0, 120),
+      publishedTime: post.date,
+      tags: post.topics,
+      images,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.title || '一条想法',
+      description: post.excerpt || post.body.slice(0, 120),
+      images,
+    },
+  }
 }
 
 export default async function PostPage({ params }: Props) {
