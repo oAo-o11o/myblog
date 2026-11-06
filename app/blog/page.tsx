@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { getArticles, getAllTags } from '@/lib/mdx'
+import { getArticles, getAllTopics } from '@/lib/mdx'
 import BlogClient from '@/components/blog/BlogClient'
 import type { Metadata } from 'next'
 
@@ -12,7 +12,7 @@ export const metadata = {
 
 export default function BlogPage() {
   const posts = getArticles()
-  const tags = getAllTags()
+  const topics = getAllTopics()
 
   return (
     <div className="min-h-screen max-w-4xl mx-auto px-6 pt-32 pb-24">
@@ -28,7 +28,7 @@ export default function BlogPage() {
         </p>
       </header>
 
-      <BlogClient posts={posts} tags={tags} />
+      <BlogClient posts={posts} tags={topics} />
     </div>
   )
 }
