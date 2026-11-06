@@ -23,13 +23,13 @@ export default function BlogClient({ posts, tags }: BlogClientProps) {
 
   const filtered = useMemo(() => {
     return posts.filter((p) => {
-      const matchTag = !activeTag || p.tags.includes(activeTag)
+      const matchTag = !activeTag || p.topics.includes(activeTag)
       const q = search.trim().toLowerCase()
       const matchSearch =
         !q ||
         p.title.toLowerCase().includes(q) ||
         p.excerpt.toLowerCase().includes(q) ||
-        p.tags.some((t) => t.toLowerCase().includes(q))
+        p.topics.some((t) => t.toLowerCase().includes(q)) || p.title.toLowerCase().includes(q)
       return matchTag && matchSearch
     })
   }, [posts, activeTag, search])
