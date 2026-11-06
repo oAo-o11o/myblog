@@ -101,6 +101,13 @@ export function getAllTags(): string[] {
   return Array.from(tagSet).sort()
 }
 
+/** 题目列表（按出现次数降序）。站点已改用 topics，筛选器读这个而不是 tags。 */
+export function getAllTopics(): string[] {
+  return getTopicStats()
+    .sort((a, b) => b.total - a.total || a.name.localeCompare(b.name, 'zh'))
+    .map((t) => t.name)
+}
+
 export interface TopicStat {
   name: string
   total: number
