@@ -4,6 +4,8 @@ import path from 'path'
 export interface SiteConfig {
   name: string
   nameEn: string
+  /** 站点完整地址，用于 sitemap / RSS / OG 卡片的绝对链接 */
+  url: string
   tagline1: string
   tagline2: string
   epigraph: string
@@ -16,6 +18,7 @@ export const SITE_PATH = path.join(process.cwd(), 'content', 'site.json')
 export const DEFAULT_SITE: SiteConfig = {
   name: '数字角落',
   nameEn: 'digital corner',
+  url: '',
   tagline1: '想清楚之前，',
   tagline2: '先写下来。',
   epigraph:
@@ -32,6 +35,7 @@ export function readSite(): SiteConfig {
     return {
       name: typeof raw.name === 'string' && raw.name ? raw.name : DEFAULT_SITE.name,
       nameEn: typeof raw.nameEn === 'string' ? raw.nameEn : DEFAULT_SITE.nameEn,
+      url: typeof raw.url === 'string' ? raw.url.replace(/\/+$/, '') : DEFAULT_SITE.url,
       tagline1: typeof raw.tagline1 === 'string' ? raw.tagline1 : DEFAULT_SITE.tagline1,
       tagline2: typeof raw.tagline2 === 'string' ? raw.tagline2 : DEFAULT_SITE.tagline2,
       epigraph: typeof raw.epigraph === 'string' ? raw.epigraph : DEFAULT_SITE.epigraph,
