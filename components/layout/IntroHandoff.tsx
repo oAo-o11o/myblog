@@ -70,13 +70,9 @@ export default function IntroHandoff() {
       window.setTimeout(finish, 1010)
     }
 
-    // 用「从页面开始加载到现在」的时长来对齐，而不是从挂载算起
-    const remaining = MORPH_AT - performance.now()
-    if (remaining <= 0) {
-      finish()
-      return
-    }
-
+    // 用「从页面开始加载到现在」的时长来对齐，而不是从挂载算起：
+    // 还没到点就等到点；已经过点（网慢，hydration 晚了）就立刻飞。
+    const remaining = Math.max(0, MORPH_AT - performance.now())
     const timer = window.setTimeout(run, remaining)
     return () => window.clearTimeout(timer)
   }, [])
