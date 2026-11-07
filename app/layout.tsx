@@ -4,6 +4,7 @@ import './globals.css'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 import AdminAware from '@/components/layout/AdminAware'
+import Intro from '@/components/layout/Intro'
 import { readSite } from '@/lib/site'
 
 export function generateMetadata(): Metadata {
@@ -63,6 +64,8 @@ export default function RootLayout({
         <Script id="skin-boot" strategy="beforeInteractive">
           {`try{var s=localStorage.getItem('skin');if(s)document.documentElement.dataset.skin=s}catch(e){}`}
         </Script>
+
+        <Intro name={site.name} nameEn={site.nameEn} />
 
         <Navbar site={site} />
 
