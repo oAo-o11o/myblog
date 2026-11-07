@@ -37,7 +37,7 @@ export default function Intro({ nameEn }: { nameEn: string }) {
             <span
               key={`${ch}-${i}`}
               className="intro-char"
-              style={{ animationDelay: `${0.16 + i * 0.1}s` }}
+              style={{ animationDelay: `${0.2 + i * 0.12}s` }}
             >
               {ch}
             </span>
