@@ -1,11 +1,29 @@
 import type { Metadata } from 'next'
-import Script from 'next/script'
 import './globals.css'
 import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 import AdminAware from '@/components/layout/AdminAware'
 import Intro from '@/components/layout/Intro'
 import { readSite } from '@/lib/site'
+
+/**
+ * 首屏同步脚本：在浏览器解析到这里时立即执行，早于任何绘制。
+ * 1) 恢复上次选的皮肤，避免闪烁
+ * 2) 决定进站画面播不播（同一会话只看一次 / 后台 / 减少动效 / ?nointro）
+ */
+const BOOT_SCRIPT = `
+try{
+  try{var s=localStorage.getItem('skin');if(s){document.documentElement.dataset.skin=s}}catch(e){}
+  var skip=false;
+  try{
+    if(location.pathname.indexOf('/admin')>=0)skip=true;
+    if(new URLSearchParams(location.search).has('nointro'))skip=true;
+    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)skip=true;
+    if(sessionStorage.getItem('intro-seen')==='1')skip=true;
+  }catch(e){skip=true}
+  if(skip){document.documentElement.dataset.intro='skip'}else{sessionStorage.setItem('intro-seen','1')}
+}catch(e){}
+`
 
 export function generateMetadata(): Metadata {
   const site = readSite()
@@ -60,12 +78,14 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-screen flex flex-col">
-        {/* 防换肤闪烁：在 hydration 前把上次选中的皮肤写回 <html> */}
-        <Script id="skin-boot" strategy="beforeInteractive">
-          {`try{var s=localStorage.getItem('skin');if(s)document.documentElement.dataset.skin=s}catch(e){}`}
-        </Script>
+        {/*
+          真正同步执行的内联脚本，必须放在 body 最前面。
+          （Next 的 <Script strategy="beforeInteractive"> 在 App Router 里是
+           排队执行，会晚于首屏绘制，所以「皮肤闪烁」和「进站画面晚到」都得靠这段解决。）
+        */}
+        <script dangerouslySetInnerHTML={{ __html: BOOT_SCRIPT }} />
 
-        <Intro name={site.name} nameEn={site.nameEn} />
+        <Intro nameEn={site.nameEn} />
 
         <Navbar site={site} />
 
