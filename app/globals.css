@@ -948,38 +948,90 @@ html { scroll-behavior: auto; }
   color: color-mix(in oklab, var(--skin-ink) 82%, transparent);
 }
 /* ============================================================
-   进站画面：同一会话只播放一次，是「开机」的感觉而不是动画特效
+   进站画面：杂志刊头的版式感，不是转圈加载
+   - 顶/底各一条细字，标注刊名与日期
+   - 站名逐字出现，字距从松收到紧
+   - 一条细线横扫而过
+   - 退场是整个画面向上收起，不是淡出
    ============================================================ */
 .intro-overlay {
   position: fixed;
   inset: 0;
   z-index: 90;
+  background: var(--skin-canvas);
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--skin-canvas);
+  will-change: clip-path;
 }
 
 .intro-overlay[data-leaving="true"] {
-  animation: intro-out 0.5s ease-in forwards;
+  animation: intro-wipe 0.72s cubic-bezier(0.76, 0, 0.24, 1) forwards;
 }
 
-.intro-line {
+.intro-frame {
+  position: absolute;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 0 6vw;
   opacity: 0;
-  transform: translateY(6px);
-  animation: intro-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: intro-fade-in 0.9s ease-out 0.12s forwards;
 }
 
-.intro-line[data-delay="1"] { animation-delay: 0.18s; }
-.intro-line[data-delay="2"] { animation-delay: 0.42s; }
-.intro-line[data-delay="3"] { animation-delay: 0.72s; }
+.intro-frame[data-pos="top"] { top: 8vh; }
+.intro-frame[data-pos="bottom"] { bottom: 8vh; }
 
-@keyframes intro-in {
-  to { opacity: 1; transform: none; }
+.intro-center {
+  text-align: center;
+  padding: 0 24px;
 }
 
-@keyframes intro-out {
-  to { opacity: 0; visibility: hidden; }
+/* 逐字出现：每个字单独一层，靠 animation-delay 排队 */
+.intro-char {
+  display: inline-block;
+  opacity: 0;
+  filter: blur(6px);
+  transform: translateY(0.18em);
+  animation: intro-char 0.85s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.intro-title {
+  /* 字距会在最后一个字后面留白，补回来才是视觉居中 */
+  padding-left: 0.42em;
+  letter-spacing: 0.42em;
+  animation: intro-tracking 1.6s cubic-bezier(0.22, 1, 0.36, 1) 0.1s forwards;
+}
+
+.intro-sweep {
+  height: 1px;
+  width: 0;
+  margin: 2.4rem auto 0;
+  background: var(--skin-line-strong);
+  animation: intro-sweep 0.85s cubic-bezier(0.76, 0, 0.24, 1) 1.15s forwards;
+}
+
+@keyframes intro-fade-in {
+  to { opacity: 1; }
+}
+
+@keyframes intro-char {
+  to { opacity: 1; filter: blur(0); transform: none; }
+}
+
+@keyframes intro-tracking {
+  from { letter-spacing: 0.42em; }
+  to { letter-spacing: 0.16em; }
+}
+
+@keyframes intro-sweep {
+  to { width: 220px; }
+}
+
+@keyframes intro-wipe {
+  to { clip-path: inset(0 0 100% 0); }
 }
 
 /* 关掉动画的环境里，这段画面直接不出现 */
