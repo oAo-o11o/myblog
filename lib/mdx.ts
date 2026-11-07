@@ -74,8 +74,19 @@ export function getAllPosts(): PostMeta[] {
   return getAllEntries()
 }
 
+/** 专栏用的题目名：带这个题目的内容只出现在专栏里，不再混进想法流 */
+export const LIFE_TOPIC = '生活'
+
+export const isLifeEntry = (e: PostMeta) => e.topics?.includes(LIFE_TOPIC) ?? false
+
 export function getThoughts(): PostMeta[] {
-  return getAllEntries().filter((e) => e.kind === 'thought')
+  // 生活专栏是独立的一路，不重复出现在想法里
+  return getAllEntries().filter((e) => e.kind === 'thought' && !isLifeEntry(e))
+}
+
+/** 生活专栏的内容（想法和文章都算） */
+export function getLifeEntries(): PostMeta[] {
+  return getAllEntries().filter(isLifeEntry)
 }
 
 export function getArticles(): PostMeta[] {

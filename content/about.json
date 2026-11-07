@@ -39,16 +39,6 @@
       "color": "var(--skin-accent)"
     },
     {
-      "name": "Linux",
-      "level": 50,
-      "color": "var(--skin-accent)"
-    },
-    {
-      "name": "Git",
-      "level": 50,
-      "color": "var(--skin-accent)"
-    },
-    {
       "name": "Technical Writing",
       "level": 50,
       "color": "var(--skin-accent)"

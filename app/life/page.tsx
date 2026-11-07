@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { getAllEntries } from '@/lib/mdx'
+import { getLifeEntries, LIFE_TOPIC } from '@/lib/mdx'
 import MediaStrip from '@/components/content/MediaStrip'
 
 export const dynamic = 'force-dynamic'
@@ -9,8 +9,7 @@ export const metadata = {
   description: '想累了就记点别的。发生过什么，就记什么。',
 }
 
-/** 专栏的判定：题目里带这个词的内容，都会出现在这里 */
-const COLUMN = '生活'
+const COLUMN = LIFE_TOPIC
 
 function monthParts(ym: string) {
   const [y, m] = ym.split('-')
@@ -18,7 +17,7 @@ function monthParts(ym: string) {
 }
 
 export default function LifePage() {
-  const entries = getAllEntries().filter((e) => e.topics?.includes(COLUMN))
+  const entries = getLifeEntries()
 
   const groups: { month: string; items: typeof entries }[] = []
   for (const e of entries) {
