@@ -4,6 +4,7 @@ import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 import AdminAware from '@/components/layout/AdminAware'
 import Intro from '@/components/layout/Intro'
+import IntroHandoff from '@/components/layout/IntroHandoff'
 import { readSite } from '@/lib/site'
 
 /**
@@ -86,6 +87,7 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: BOOT_SCRIPT }} />
 
         <Intro nameEn={site.nameEn} />
+        <IntroHandoff />
 
         <Navbar site={site} />
 
