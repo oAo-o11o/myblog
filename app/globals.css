@@ -948,11 +948,9 @@ html { scroll-behavior: auto; }
   color: color-mix(in oklab, var(--skin-ink) 82%, transparent);
 }
 /* ============================================================
-   进站画面：杂志刊头的版式感，不是转圈加载
-   - 顶/底各一条细字，标注刊名与日期
-   - 站名逐字出现，字距从松收到紧
-   - 一条细线横扫而过
-   - 退场是整个画面向上收起，不是淡出
+   进站画面：服务端直接输出的刊头，CSS 自己走完时序
+   —— 不依赖 JS 挂载，所以不会出现「首页先闪一下」
+   —— html[data-intro="skip"] 时整块不显示（重复访问 / 后台 / 减少动效）
    ============================================================ */
 .intro-overlay {
   position: fixed;
@@ -962,11 +960,16 @@ html { scroll-behavior: auto; }
   display: flex;
   align-items: center;
   justify-content: center;
+  pointer-events: none;
   will-change: clip-path;
+  /* 2.05s 开始向上收起，2.78s 彻底隐去 */
+  animation:
+    intro-wipe 0.72s cubic-bezier(0.76, 0, 0.24, 1) 2.05s forwards,
+    intro-off 0s linear 2.78s forwards;
 }
 
-.intro-overlay[data-leaving="true"] {
-  animation: intro-wipe 0.72s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+html[data-intro="skip"] .intro-overlay {
+  display: none;
 }
 
 .intro-frame {
@@ -989,7 +992,7 @@ html { scroll-behavior: auto; }
   padding: 0 24px;
 }
 
-/* 逐字出现：每个字单独一层，靠 animation-delay 排队 */
+/* 逐字显影：每个字单独一层，靠 animation-delay 排队 */
 .intro-char {
   display: inline-block;
   opacity: 0;
@@ -1005,10 +1008,15 @@ html { scroll-behavior: auto; }
   animation: intro-tracking 1.6s cubic-bezier(0.22, 1, 0.36, 1) 0.1s forwards;
 }
 
+.intro-sub {
+  opacity: 0;
+  animation: intro-fade-in 1s ease-out 0.8s forwards;
+}
+
 .intro-sweep {
   height: 1px;
   width: 0;
-  margin: 2.4rem auto 0;
+  margin: 2rem auto 1.6rem;
   background: var(--skin-line-strong);
   animation: intro-sweep 0.85s cubic-bezier(0.76, 0, 0.24, 1) 1.15s forwards;
 }
@@ -1034,7 +1042,11 @@ html { scroll-behavior: auto; }
   to { clip-path: inset(0 0 100% 0); }
 }
 
-/* 关掉动画的环境里，这段画面直接不出现 */
+@keyframes intro-off {
+  to { visibility: hidden; opacity: 0; }
+}
+
+/* 系统要求减少动态效果：整块不出现 */
 @media (prefers-reduced-motion: reduce) {
   .intro-overlay { display: none; }
 }
