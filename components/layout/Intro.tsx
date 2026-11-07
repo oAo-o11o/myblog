@@ -1,52 +1,17 @@
-'use client'
-
-import { useEffect, useState } from 'react'
-import { usePathname } from 'next/navigation'
-
 /**
- * 进站画面：按杂志刊头的关系排布，而不是一个居中的 logo。
+ * 进站画面：服务端渲染，CSS 自己走完时序。
  *
- *   2026 — 11 — 06                          DIGITAL CORNER
+ * 为什么不用客户端组件：客户端组件要等 hydration 才挂载，
+ * 网慢时首页会先画出来，然后这块遮罩才「啪」一下盖上去。
+ * 现在它就在 HTML 里，第一帧就在，不会有闪动。
  *
- *                     思 考 角 落
- *
- *                         ─────
- *
- *   NO. 001 · 记录思考的地方                  READ IN THE DARK
- *
- * 时序：逐字出现 → 字距收紧 → 细线横扫 → 整屏向上收起
- *
- * 规则：
- * - 同一会话只播一次（sessionStorage），刷新不反复挡人
- * - 后台不播
- * - 系统开了「减少动态效果」就不播
- * - 地址加 ?nointro 可跳过（截图用）
+ * 什么时候不显示（由 layout 里的内联脚本提前判定，写进 html[data-intro="skip"]）：
+ * - 同一会话已经看过
+ * - 后台页面
+ * - 系统开了「减少动态效果」
+ * - 地址带 ?nointro
  */
-export default function Intro({ name, nameEn }: { name: string; nameEn: string }) {
-  const pathname = usePathname()
-  const [show, setShow] = useState(false)
-  const [leaving, setLeaving] = useState(false)
-
-  useEffect(() => {
-    if (pathname?.startsWith('/admin')) return
-    if (typeof window === 'undefined') return
-    if (new URLSearchParams(window.location.search).has('nointro')) return
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-    if (sessionStorage.getItem('intro-seen') === '1') return
-
-    sessionStorage.setItem('intro-seen', '1')
-    setShow(true)
-
-    const toLeave = setTimeout(() => setLeaving(true), 2050)
-    const toHide = setTimeout(() => setShow(false), 2820)
-    return () => {
-      clearTimeout(toLeave)
-      clearTimeout(toHide)
-    }
-  }, [pathname])
-
-  if (!show) return null
-
+export default function Intro({ nameEn }: { nameEn: string }) {
   const now = new Date()
   const dateLine = [
     now.getFullYear(),
@@ -54,16 +19,21 @@ export default function Intro({ name, nameEn }: { name: string; nameEn: string }
     String(now.getDate()).padStart(2, '0'),
   ].join(' — ')
 
+  const title = '思考角落'
+
   return (
-    <div className="intro-overlay" data-leaving={leaving ? 'true' : 'false'} aria-hidden="true">
-      <div className="intro-frame font-mono text-[0.5rem] tracking-[0.34em] uppercase text-ink-dim" data-pos="top">
+    <div className="intro-overlay" aria-hidden="true">
+      <div
+        className="intro-frame font-mono text-[0.5rem] uppercase tracking-[0.34em] text-ink-dim"
+        data-pos="top"
+      >
         <span>{dateLine}</span>
         <span>{nameEn}</span>
       </div>
 
       <div className="intro-center">
-        <div className="intro-title type-display-2 !text-[1.75rem] md:!text-[2.25rem] text-ink">
-          {[...name].map((ch, i) => (
+        <div className="intro-title type-display-2 !text-[1.75rem] text-ink md:!text-[2.25rem]">
+          {[...title].map((ch, i) => (
             <span
               key={`${ch}-${i}`}
               className="intro-char"
@@ -74,12 +44,19 @@ export default function Intro({ name, nameEn }: { name: string; nameEn: string }
           ))}
         </div>
 
+        <div className="intro-sub mt-5 font-mono text-[0.5625rem] uppercase tracking-[0.42em] text-ink-dim">
+          人生朝露 · 科技千秋
+        </div>
+
         <div className="intro-sweep" />
       </div>
 
-      <div className="intro-frame font-mono text-[0.5rem] tracking-[0.34em] uppercase text-ink-dim" data-pos="bottom">
-        <span>NO. 001 · 记录思考的地方</span>
-        <span>read in the dark</span>
+      <div
+        className="intro-frame font-mono text-[0.5rem] uppercase tracking-[0.34em] text-ink-muted"
+        data-pos="bottom"
+      >
+        <span>做想做的事</span>
+        <span>坦荡迎接死亡</span>
       </div>
     </div>
   )
