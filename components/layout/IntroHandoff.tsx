@@ -52,11 +52,9 @@ export default function IntroHandoff() {
       // 接管：取消 CSS 的收起动画，改成一飞行 + 背景淡出
       overlay.style.animation = 'none'
       overlay.style.clipPath = 'none'
-      overlay.style.transition = 'opacity 0.85s ease'
-
-      requestAnimationFrame(() => {
-        overlay.style.opacity = '0'
-      })
+      // 只让背景退去，站名本身保持不透明，否则飞行途中会「虚」掉
+      overlay.style.transition = 'background-color 0.85s ease'
+      overlay.style.backgroundColor = 'transparent'
 
       title.style.transformOrigin = 'top left'
       title.style.transition = 'transform 1s cubic-bezier(0.76, 0, 0.24, 1)'
