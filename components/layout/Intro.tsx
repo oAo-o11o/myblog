@@ -4,13 +4,23 @@ import { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
 
 /**
- * 进站画面：像开机一样，一行一行亮起来，然后让位给内容。
+ * 进站画面：按杂志刊头的关系排布，而不是一个居中的 logo。
+ *
+ *   2026 — 11 — 06                          DIGITAL CORNER
+ *
+ *                     思 考 角 落
+ *
+ *                         ─────
+ *
+ *   NO. 001 · 记录思考的地方                  READ IN THE DARK
+ *
+ * 时序：逐字出现 → 字距收紧 → 细线横扫 → 整屏向上收起
  *
  * 规则：
- * - 同一会话只播一次（sessionStorage），刷新不会反复挡人
+ * - 同一会话只播一次（sessionStorage），刷新不反复挡人
  * - 后台不播
  * - 系统开了「减少动态效果」就不播
- * - 地址后面加 ?nointro 可以跳过（截图时用）
+ * - 地址加 ?nointro 可跳过（截图用）
  */
 export default function Intro({ name, nameEn }: { name: string; nameEn: string }) {
   const pathname = usePathname()
@@ -27,8 +37,8 @@ export default function Intro({ name, nameEn }: { name: string; nameEn: string }
     sessionStorage.setItem('intro-seen', '1')
     setShow(true)
 
-    const toLeave = setTimeout(() => setLeaving(true), 1400)
-    const toHide = setTimeout(() => setShow(false), 1900)
+    const toLeave = setTimeout(() => setLeaving(true), 2050)
+    const toHide = setTimeout(() => setShow(false), 2820)
     return () => {
       clearTimeout(toLeave)
       clearTimeout(toHide)
@@ -37,23 +47,39 @@ export default function Intro({ name, nameEn }: { name: string; nameEn: string }
 
   if (!show) return null
 
+  const now = new Date()
+  const dateLine = [
+    now.getFullYear(),
+    String(now.getMonth() + 1).padStart(2, '0'),
+    String(now.getDate()).padStart(2, '0'),
+  ].join(' — ')
+
   return (
     <div className="intro-overlay" data-leaving={leaving ? 'true' : 'false'} aria-hidden="true">
-      <div className="text-center px-6">
-        <div className="intro-line type-display-2 !text-[1.5rem] !tracking-[0.22em] text-ink" data-delay="1">
-          {name}
+      <div className="intro-frame font-mono text-[0.5rem] tracking-[0.34em] uppercase text-ink-dim" data-pos="top">
+        <span>{dateLine}</span>
+        <span>{nameEn}</span>
+      </div>
+
+      <div className="intro-center">
+        <div className="intro-title type-display-2 !text-[1.75rem] md:!text-[2.25rem] text-ink">
+          {[...name].map((ch, i) => (
+            <span
+              key={`${ch}-${i}`}
+              className="intro-char"
+              style={{ animationDelay: `${0.16 + i * 0.1}s` }}
+            >
+              {ch}
+            </span>
+          ))}
         </div>
 
-        <div
-          className="intro-line mt-3 font-mono text-[0.5rem] tracking-[0.42em] text-ink-dim uppercase"
-          data-delay="2"
-        >
-          {nameEn}
-        </div>
+        <div className="intro-sweep" />
+      </div>
 
-        <div className="intro-line mt-8 flex justify-center" data-delay="3">
-          <span className="block h-8 w-px bg-line" />
-        </div>
+      <div className="intro-frame font-mono text-[0.5rem] tracking-[0.34em] uppercase text-ink-dim" data-pos="bottom">
+        <span>NO. 001 · 记录思考的地方</span>
+        <span>read in the dark</span>
       </div>
     </div>
   )
