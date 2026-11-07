@@ -947,3 +947,42 @@ html { scroll-behavior: auto; }
   line-height: 1.6;
   color: color-mix(in oklab, var(--skin-ink) 82%, transparent);
 }
+/* ============================================================
+   进站画面：同一会话只播放一次，是「开机」的感觉而不是动画特效
+   ============================================================ */
+.intro-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--skin-canvas);
+}
+
+.intro-overlay[data-leaving="true"] {
+  animation: intro-out 0.5s ease-in forwards;
+}
+
+.intro-line {
+  opacity: 0;
+  transform: translateY(6px);
+  animation: intro-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.intro-line[data-delay="1"] { animation-delay: 0.18s; }
+.intro-line[data-delay="2"] { animation-delay: 0.42s; }
+.intro-line[data-delay="3"] { animation-delay: 0.72s; }
+
+@keyframes intro-in {
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes intro-out {
+  to { opacity: 0; visibility: hidden; }
+}
+
+/* 关掉动画的环境里，这段画面直接不出现 */
+@media (prefers-reduced-motion: reduce) {
+  .intro-overlay { display: none; }
+}
