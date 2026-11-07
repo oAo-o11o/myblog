@@ -7,8 +7,12 @@ import { useEffect } from 'react'
  * 变成导航栏的品牌。位置和大小都是量出来的（FLIP），
  * 所以不同屏幕、不同字号都能对齐。
  *
- * 如果 JS 没跑起来，CSS 里那套「整屏向上收起」会自动兜底。
+ * 关键点：时间必须按 performance.now()（页面开始加载算起）对齐，
+ * 不能用「挂载后 2.95 秒」——网慢时 hydration 会晚到，
+ * 那时候 CSS 兜底动画早就把遮罩收掉了，再去启动反而会让它重新出现。
  */
+const MORPH_AT = 2950 // 与 CSS 里第 3.3 秒的兜底收起错开一点
+
 export default function IntroHandoff() {
   useEffect(() => {
     const root = document.documentElement
@@ -19,18 +23,25 @@ export default function IntroHandoff() {
     const brand = document.querySelector<HTMLElement>('[data-brand]')
     if (!overlay || !title || !brand) return
 
+    let finished = false
     const finish = () => {
+      if (finished) return
+      finished = true
       overlay.style.display = 'none'
       delete root.dataset.introMorph
       root.dataset.intro = 'done'
     }
 
-    // 画面演完之后再飞（CSS 里第 3.3 秒才开始收起，这里提前一点接管）
-    const timer = window.setTimeout(() => {
+    const run = () => {
+      // 兜底动画已经收完了就别再介入，否则会把遮罩拉回来
+      const cs = getComputedStyle(overlay)
+      if (cs.visibility === 'hidden' || Number(cs.opacity) < 0.05 || cs.display === 'none') {
+        finish()
+        return
+      }
+
       const a = title.getBoundingClientRect()
       const b = brand.getBoundingClientRect()
-
-      // 量不到就干脆收掉，不留半截画面
       if (!a.width || !b.width) {
         finish()
         return
@@ -38,17 +49,18 @@ export default function IntroHandoff() {
 
       root.dataset.introMorph = '1'
 
-      const scale = b.width / a.width
-      title.style.transformOrigin = 'top left'
-      title.style.transition = 'transform 1s cubic-bezier(0.76, 0, 0.24, 1)'
-      title.style.transform = `translate(${b.left - a.left}px, ${b.top - a.top}px) scale(${scale})`
-
-      // 背景改成淡出（不用收起，否则会把飞行中的站名裁掉）
+      // 接管：取消 CSS 的收起动画，改成一飞行 + 背景淡出
       overlay.style.animation = 'none'
+      overlay.style.clipPath = 'none'
       overlay.style.transition = 'opacity 0.85s ease'
+
       requestAnimationFrame(() => {
         overlay.style.opacity = '0'
       })
+
+      title.style.transformOrigin = 'top left'
+      title.style.transition = 'transform 1s cubic-bezier(0.76, 0, 0.24, 1)'
+      title.style.transform = `translate(${b.left - a.left}px, ${b.top - a.top}px) scale(${b.width / a.width})`
 
       overlay.querySelectorAll<HTMLElement>('.intro-frame, .intro-sub, .intro-sweep').forEach((el) => {
         el.style.transition = 'opacity 0.35s ease'
@@ -56,8 +68,16 @@ export default function IntroHandoff() {
       })
 
       window.setTimeout(finish, 1010)
-    }, 2950)
+    }
 
+    // 用「从页面开始加载到现在」的时长来对齐，而不是从挂载算起
+    const remaining = MORPH_AT - performance.now()
+    if (remaining <= 0) {
+      finish()
+      return
+    }
+
+    const timer = window.setTimeout(run, remaining)
     return () => window.clearTimeout(timer)
   }, [])
 
