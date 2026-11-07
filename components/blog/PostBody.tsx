@@ -26,14 +26,22 @@ function normalizeMediaUrl(raw: string): string {
 }
 
 const components = {
-  img: (props: React.ImgHTMLAttributes<HTMLImageElement>) => (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      {...props}
-      src={typeof props.src === 'string' ? normalizeMediaUrl(props.src) : props.src}
-      className="rounded-xl"
-    />
-  ),
+  img: (props: React.ImgHTMLAttributes<HTMLImageElement>) => {
+    const src = typeof props.src === 'string' ? normalizeMediaUrl(props.src) : undefined
+    return (
+      // 原图不压缩，点开就是原始文件
+      <a href={src} target="_blank" rel="noopener noreferrer" title="查看原图" className="block">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          {...props}
+          src={src}
+          loading="lazy"
+          decoding="async"
+          className="rounded-xl"
+        />
+      </a>
+    )
+  },
   video: (props: React.VideoHTMLAttributes<HTMLVideoElement>) => (
     <video
       {...props}
