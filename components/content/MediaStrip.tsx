@@ -60,6 +60,8 @@ export default function MediaStrip({ media }: { media?: string[] }) {
 
         const meta = photos[file]
         // 单图：按原始比例显示但限制高度，不裁切；多图：统一方寸，避免参差
+        // 原图不压缩、不改尺寸，点开就是原始文件
+        const src = asset(`/api/media/photos/${file}`)
         return (
           <div
             key={file}
@@ -67,18 +69,26 @@ export default function MediaStrip({ media }: { media?: string[] }) {
               single ? 'inline-block' : 'aspect-square'
             }`}
           >
-            <Image
-              src={asset(`/api/media/photos/${file}`)}
-              alt={meta?.alt || file}
-              width={meta?.width || 1200}
-              height={meta?.height || 900}
-              sizes={single ? '(max-width: 768px) 100vw, 720px' : '(max-width: 768px) 50vw, 360px'}
-              className={
-                single
-                  ? 'max-h-[480px] w-auto h-auto rounded-xl'
-                  : 'w-full h-full object-cover'
-              }
-            />
+            <a
+              href={src}
+              target="_blank"
+              rel="noopener noreferrer"
+              title="查看原图"
+              className="block"
+            >
+              <Image
+                src={src}
+                alt={meta?.alt || file}
+                width={meta?.width || 1200}
+                height={meta?.height || 900}
+                sizes={single ? '(max-width: 768px) 100vw, 720px' : '(max-width: 768px) 50vw, 360px'}
+                className={
+                  single
+                    ? 'max-h-[480px] w-auto h-auto rounded-xl'
+                    : 'w-full h-full object-cover transition-transform duration-500 hover:scale-[1.02]'
+                }
+              />
+            </a>
           </div>
         )
       })}
