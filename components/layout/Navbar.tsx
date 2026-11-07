@@ -42,7 +42,7 @@ export default function Navbar({ site }: { site: SiteConfig }) {
       >
         <div className="max-w-6xl mx-auto px-6 flex items-center justify-between">
           <Link href="/" className="group flex items-baseline gap-2.5">
-            <span className="type-display-2 !text-[1rem] !leading-none !tracking-[0.18em] text-ink">
+            <span data-brand className="type-display-2 !text-[1rem] !leading-none !tracking-[0.18em] text-ink">
               {site.name}
             </span>
             <span className="font-mono text-[0.5rem] tracking-[0.3em] text-ink-dim uppercase">
