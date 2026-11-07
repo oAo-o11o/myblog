@@ -964,12 +964,17 @@ html { scroll-behavior: auto; }
   will-change: clip-path;
   /* 2.05s 开始向上收起，2.78s 彻底隐去 */
   animation:
-    intro-wipe 0.72s cubic-bezier(0.76, 0, 0.24, 1) 2.05s forwards,
-    intro-off 0s linear 2.78s forwards;
+    intro-wipe 0.85s cubic-bezier(0.76, 0, 0.24, 1) 3.3s forwards,
+    intro-off 0s linear 4.15s forwards;
 }
 
 html[data-intro="skip"] .intro-overlay {
   display: none;
+}
+
+/* 接力进行中：真品牌先不显示，等站名飞到位再一起露出 */
+html[data-intro-morph] [data-brand] {
+  opacity: 0;
 }
 
 .intro-frame {
@@ -1010,7 +1015,7 @@ html[data-intro="skip"] .intro-overlay {
 
 .intro-sub {
   opacity: 0;
-  animation: intro-fade-in 1s ease-out 0.8s forwards;
+  animation: intro-fade-in 1.1s ease-out 1.05s forwards;
 }
 
 .intro-sweep {
@@ -1018,7 +1023,7 @@ html[data-intro="skip"] .intro-overlay {
   width: 0;
   margin: 2rem auto 1.6rem;
   background: var(--skin-line-strong);
-  animation: intro-sweep 0.85s cubic-bezier(0.76, 0, 0.24, 1) 1.15s forwards;
+  animation: intro-sweep 0.95s cubic-bezier(0.76, 0, 0.24, 1) 1.5s forwards;
 }
 
 @keyframes intro-fade-in {
