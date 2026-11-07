@@ -964,8 +964,8 @@ html { scroll-behavior: auto; }
   will-change: clip-path;
   /* 2.05s 开始向上收起，2.78s 彻底隐去 */
   animation:
-    intro-wipe 0.85s cubic-bezier(0.76, 0, 0.24, 1) 3.3s forwards,
-    intro-off 0s linear 4.15s forwards;
+    intro-wipe 0.85s cubic-bezier(0.76, 0, 0.24, 1) 6s forwards,
+    intro-off 0s linear 6.85s forwards;
 }
 
 html[data-intro="skip"] .intro-overlay {
