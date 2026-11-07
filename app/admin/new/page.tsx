@@ -30,6 +30,15 @@ export default function NewPostPage() {
       .catch(() => {})
   }, [])
 
+  // 支持从快捷入口带参数进来：/admin/new?topic=生活&kind=thought
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search)
+    const topic = q.get('topic')
+    const k = q.get('kind')
+    if (topic) setForm((f) => ({ ...f, topics: topic }))
+    if (k === 'article' || k === 'thought') setKind(k)
+  }, [])
+
   const toggleMedia = (id: string) =>
     setMedia((m) => (m.includes(id) ? m.filter((x) => x !== id) : [...m, id]))
   const [error, setError] = useState('')

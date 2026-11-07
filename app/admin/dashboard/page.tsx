@@ -22,6 +22,7 @@ interface Counts {
 
 const ACTIONS = [
   { href: '/admin/new',            label: '写一条',   hint: '想法 / 文章' },
+  { href: '/admin/new?topic=生活&kind=thought', label: '写生活', hint: '题目自动填「生活」' },
   { href: '/admin/gallery/upload', label: '上传图片', hint: '≤ 10 MB' },
   { href: '/admin/videos/upload',  label: '上传视频', hint: '≤ 50 MB · 自动转码' },
   { href: '/admin/about',          label: '关于页',   hint: 'about.json' },
